@@ -1,5 +1,5 @@
 // Aplica las migraciones pendientes de la carpeta ./drizzle.
-// Uso: npm run db:migrate
+// Uso: bun run db:migrate
 import { existsSync } from "node:fs";
 import { drizzle } from "drizzle-orm/postgres-js";
 import { migrate } from "drizzle-orm/postgres-js/migrator";

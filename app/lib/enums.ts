@@ -1,5 +1,5 @@
 // Valores permitidos que se comparten entre la base de datos y la interfaz.
-// Si agregas un valor aquí, genera una migración con `npm run db:generate`.
+// Si agregas un valor aquí, genera una migración con `bun run db:generate`.
 
 export const USER_ROLES = ["admin", "tesoreria", "secretaria", "comunicacion"] as const;
 export type UserRole = (typeof USER_ROLES)[number];

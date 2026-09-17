@@ -1,5 +1,5 @@
 // Genera los íconos PNG y la imagen para redes sociales a partir de public/favicon.svg.
-// Si reemplazas el logotipo, actualiza public/favicon.svg y ejecuta: npx tsx scripts/generate-icons.ts
+// Si reemplazas el logotipo, actualiza public/favicon.svg y ejecuta: bun run icons
 import { readFile } from "node:fs/promises";
 import sharp from "sharp";
 

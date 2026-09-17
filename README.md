@@ -16,45 +16,52 @@ Sitio web y panel de administración de la **Asociación de Propietarios Unidos 
 | Seguridad | Contraseñas con Argon2id, sesiones en base de datos, cookies firmadas `httpOnly`, control de permisos por rol |
 | Imágenes | Sharp (redimensiona, convierte a WebP y elimina metadatos GPS) |
 | Pruebas | Vitest |
+| Paquetes y scripts | Bun (`bun.lock`); los scripts de base de datos corren en TypeScript directamente con Bun |
 
 > **¿Por qué React Router y no el paquete `remix`?** El equipo de Remix unió Remix v2 con React Router: desde 2024 los proyectos nuevos de "Remix" se crean con React Router en modo framework. El paquete `remix` 2.x solo recibe mantenimiento.
 
 ## Requisitos
 
-- Node.js **22.22 o superior** (probado con Node 26).
+- [Bun](https://bun.com) **1.2 o superior** como gestor de paquetes y para ejecutar los scripts en TypeScript.
+- Node.js **22.22 o superior** (probado con Node 26): React Router ejecuta el servidor de la aplicación sobre Node.
 - Docker (para PostgreSQL). Si tu usuario no puede usar Docker sin `sudo`, agrégalo al grupo y **cierra sesión y vuelve a entrar**:
   ```bash
   sudo usermod -aG docker $USER
   ```
-  `docker compose` es opcional: el script `npm run db:up` usa `docker run` si no está instalado.
+  `docker compose` es opcional: el script `bun run db:up` usa `docker run` si no está instalado.
 
 ## Puesta en marcha
 
 ```bash
-npm install
+bun install
 cp .env.example .env          # y completa SESSION_SECRET y ADMIN_EMAIL
-npm run setup                 # levanta PostgreSQL, aplica migraciones y crea el administrador
-npm run db:seed:demo          # (opcional) datos ficticios para explorar el panel
-npm run dev
+bun run setup                 # levanta PostgreSQL, aplica migraciones y crea el administrador
+bun run db:seed:demo          # (opcional) datos ficticios para explorar el panel
+bun run dev
 ```
 
 - Sitio: <http://localhost:5173>
-- Panel: <http://localhost:5173/admin> — entra con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de tu `.env` (si dejaste la contraseña vacía, `npm run db:seed` genera una y la muestra en la consola).
+- Panel: <http://localhost:5173/admin> — entra con `ADMIN_EMAIL` y `ADMIN_PASSWORD` de tu `.env` (si dejaste la contraseña vacía, `bun run db:seed` genera una y la muestra en la consola).
+
+Para agregar dependencias usa `bun add <paquete>` (o `bun add -d <paquete>` para desarrollo). No uses `npm install`: el archivo de bloqueo del proyecto es `bun.lock`.
 
 ## Scripts
 
 | Comando | Qué hace |
 | --- | --- |
-| `npm run dev` | Servidor de desarrollo con recarga en caliente |
-| `npm run build` / `npm start` | Compilación y servidor de producción (puerto 3000) |
-| `npm run typecheck` | Verificación de tipos |
-| `npm test` | Pruebas unitarias |
-| `npm run db:up` / `db:down` | Inicia o detiene PostgreSQL en Docker |
-| `npm run db:migrate` | Aplica migraciones pendientes |
-| `npm run db:generate` | Genera una migración después de cambiar `app/db/schema.ts` |
-| `npm run db:seed` | Crea el administrador inicial y la configuración (`--email`, `--password`, `--reset-password`) |
-| `npm run db:seed:demo` | Carga datos de demostración (**no usar en producción**) |
-| `npm run db:studio` | Explorador visual de la base de datos |
+| `bun run dev` | Servidor de desarrollo con recarga en caliente |
+| `bun run build` / `bun run start` | Compilación y servidor de producción (puerto 3000) |
+| `bun run typecheck` | Verificación de tipos |
+| `bun run test` | Pruebas unitarias (Vitest) |
+| `bun run db:up` / `db:down` | Inicia o detiene PostgreSQL en Docker |
+| `bun run db:migrate` | Aplica migraciones pendientes |
+| `bun run db:generate` | Genera una migración después de cambiar `app/db/schema.ts` |
+| `bun run db:seed` | Crea el administrador inicial y la configuración (`--email`, `--password`, `--reset-password`) |
+| `bun run db:seed:demo` | Carga datos de demostración (**no usar en producción**) |
+| `bun run db:studio` | Explorador visual de la base de datos |
+| `bun run icons` | Regenera íconos e imagen para redes a partir de `public/favicon.svg` |
+
+> Usa `bun run test`, no `bun test`: este último usa el corredor de pruebas propio de Bun en lugar de Vitest.
 
 ## Roles del panel
 
@@ -86,7 +93,7 @@ storage/                Archivos subidos (no se versiona)
 ## Personalización
 
 - **Textos, contacto, mesa directiva y datos para donativos:** Panel → Configuración (no requiere programar).
-- **Logotipo:** el emblema actual es provisional. Reemplaza `public/favicon.svg` y el componente `LogoMark` de `app/components/brand.tsx`; luego regenera íconos con `npx tsx scripts/generate-icons.ts`.
+- **Logotipo:** el emblema actual es provisional. Reemplaza `public/favicon.svg` y el componente `LogoMark` de `app/components/brand.tsx`; luego regenera íconos con `bun run icons`.
 - **Colores:** variables `--color-forest-*` y `--color-earth-*` en `app/app.css`.
 - **Contenido de “El bosque” y “Qué hacemos”:** `app/routes/site/forest.tsx` y `app/components/site/programs.ts`.
 - **Aviso de privacidad:** `app/routes/site/privacy.tsx`. Es un texto base: revísalo con un asesor legal antes de publicar.
@@ -97,10 +104,10 @@ storage/                Archivos subidos (no se versiona)
 2. Con Docker Compose (app + base de datos):
    ```bash
    docker compose --profile produccion up -d --build
-   docker compose exec app npm run db:seed
+   docker compose exec app bun run db:seed
    ```
    El contenedor aplica las migraciones al arrancar y expone `/healthz`.
-3. Sin Docker: `npm ci && npm run build && npm run db:migrate && npm start`.
+3. Sin Docker: `bun install --frozen-lockfile && bun run build && bun run db:migrate && bun run start`.
 4. Colócalo detrás de un proxy con HTTPS (Caddy, Nginx) y pon `TRUST_PROXY=true`. Si el proxy cambia el dominio, agrega tus dominios en `allowedActionOrigins` de `react-router.config.ts`.
 5. **Respaldos:** la base de datos (`pg_dump`) **y** la carpeta `storage/` (documentos y fotos).
 6. Antes de publicar, elimina los datos de demostración si los cargaste.

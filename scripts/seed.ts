@@ -1,8 +1,8 @@
 // Datos iniciales imprescindibles: usuario administrador y configuración del sitio.
 // Uso:
-//   npm run db:seed
-//   npm run db:seed -- --email=tesoreria@ejemplo.mx --name="Tesorería" --password="una-clave-larga"
-//   npm run db:seed -- --email=admin@ejemplo.mx --reset-password
+//   bun run db:seed
+//   bun run db:seed --email=tesoreria@ejemplo.mx --name="Tesorería" --password="una-clave-larga"
+//   bun run db:seed --email=admin@ejemplo.mx --reset-password
 import { eq } from "drizzle-orm";
 import { randomBytes } from "node:crypto";
 import { parseArgs } from "node:util";

@@ -1,5 +1,5 @@
 // Datos de DEMOSTRACIÓN para probar el sitio y el panel. No lo uses en producción.
-// Uso: npm run db:seed:demo   (agrega --force si ya hay miembros registrados)
+// Uso: bun run db:seed:demo   (agrega --force si ya hay miembros registrados)
 import { count, eq } from "drizzle-orm";
 import { parseArgs } from "node:util";
 import {
@@ -60,7 +60,7 @@ async function main() {
     throw new Error("Ya hay miembros registrados. Usa --force si de verdad quieres agregar datos de demostración.");
   }
   const [admin] = await db.select({ id: users.id }).from(users).where(eq(users.role, "admin")).limit(1);
-  if (!admin) throw new Error("Primero crea el administrador con: npm run db:seed");
+  if (!admin) throw new Error("Primero crea el administrador con: bun run db:seed");
 
   const today = todayISO();
   const year = currentYear();

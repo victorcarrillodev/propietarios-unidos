@@ -3,7 +3,7 @@
   "configurations": [
     {
       "name": "propietarios-unidos",
-      "runtimeExecutable": "npm",
+      "runtimeExecutable": "bun",
       "runtimeArgs": ["run", "dev"],
       "port": 5173
     }

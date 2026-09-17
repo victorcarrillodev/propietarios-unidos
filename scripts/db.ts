@@ -1,7 +1,7 @@
 // Levanta o detiene PostgreSQL con Docker.
 // Usa "docker compose" si está instalado; si no, "docker-compose"; y si tampoco
 // existe, crea el contenedor directamente con "docker run" (mismos parámetros).
-// Uso: npm run db:up  |  npm run db:down
+// Uso: bun run db:up  |  bun run db:down
 import { spawnSync, type SpawnSyncOptions } from "node:child_process";
 import { existsSync } from "node:fs";
 
