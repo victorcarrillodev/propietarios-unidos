@@ -1,0 +1,44 @@
+name: propietarios-unidos
+
+services:
+  # Base de datos PostgreSQL para desarrollo y producción.
+  db:
+    image: postgres:18-alpine
+    container_name: propietarios-unidos-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-propietarios}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-propietarios}
+      POSTGRES_DB: ${POSTGRES_DB:-propietarios_unidos}
+    ports:
+      - "127.0.0.1:${DB_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # Aplicación en modo producción: docker compose --profile produccion up -d --build
+  app:
+    profiles: ["produccion"]
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-propietarios}:${POSTGRES_PASSWORD:-propietarios}@db:5432/${POSTGRES_DB:-propietarios_unidos}
+      NODE_ENV: production
+      PORT: 3000
+      STORAGE_DIR: /app/storage
+    ports:
+      - "${APP_PORT:-3000}:3000"
+    volumes:
+      - storage:/app/storage
+
+volumes:
+  pgdata:
+  storage:
