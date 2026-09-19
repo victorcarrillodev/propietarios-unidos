@@ -23,7 +23,7 @@ export type SessionUser = {
 const sessionCookie = createCookie("pu_session", {
   httpOnly: true,
   sameSite: "lax",
-  path: "/admin",
+  path: "/",
   secure: env.secureCookies,
   secrets: [env.SESSION_SECRET],
   maxAge: SESSION_TTL_MS / 1000,

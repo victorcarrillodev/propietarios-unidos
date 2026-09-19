@@ -8,3 +8,13 @@
 
 # Archivos subidos (documentos, imágenes, fotos de reportes)
 /storage/
+
+# Pruebas y reportes
+/test-results/
+/playwright-report/
+
+# Caches y enlaces de agentes locales
+/.hermes/
+/.claude/skills/
+/skills/
+skills-lock.json
