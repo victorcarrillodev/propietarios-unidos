@@ -9,9 +9,11 @@ import { MUNICIPALITIES } from "~/lib/enums";
 import { MEMBER_TYPE_LABELS, toOptions } from "~/lib/labels";
 import { joinSchema } from "~/lib/schemas/public";
 import { seo, siteUrlFrom } from "~/lib/seo";
+import { escapeHtml } from "~/lib/utils";
 import { validateForm, type FieldErrors } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import { renderMarkdown } from "~/server/markdown.server";
+import { sendMail } from "~/server/mail.server";
 import { getClientIp, rateLimit } from "~/server/rate-limit.server";
 import { getSiteSettings } from "~/server/settings.server";
 import { isLikelyBot, parseSmallForm } from "~/server/uploads.server";
@@ -51,6 +53,27 @@ export async function action({ request }: Route.ActionArgs) {
   }
   const { privacy: _privacy, ...request_ } = result.data;
   await db.insert(membershipRequests).values(request_);
+
+  const settings = await getSiteSettings();
+  if (settings.email) {
+    await sendMail({
+      to: settings.email,
+      subject: `Nueva solicitud de ingreso: ${request_.fullName}`,
+      replyTo: request_.email,
+      html: `
+        <p><strong>Nombre:</strong> ${escapeHtml(request_.fullName)}</p>
+        <p><strong>Correo:</strong> ${escapeHtml(request_.email)}</p>
+        <p><strong>Teléfono:</strong> ${escapeHtml(request_.phone)}</p>
+        <p><strong>Tipo de participación:</strong> ${escapeHtml(MEMBER_TYPE_LABELS[request_.memberType])}</p>
+        ${request_.propertyName ? `<p><strong>Predio:</strong> ${escapeHtml(request_.propertyName)}</p>` : ""}
+        ${request_.municipality ? `<p><strong>Municipio:</strong> ${escapeHtml(request_.municipality)}</p>` : ""}
+        ${request_.locality ? `<p><strong>Localidad:</strong> ${escapeHtml(request_.locality)}</p>` : ""}
+        ${request_.areaHa ? `<p><strong>Superficie:</strong> ${escapeHtml(request_.areaHa)} ha</p>` : ""}
+        ${request_.message ? `<p><strong>Mensaje:</strong><br>${escapeHtml(request_.message).replace(/\n/g, "<br>")}</p>` : ""}
+      `,
+    });
+  }
+
   return data<ActionResult>({ ok: true });
 }
 

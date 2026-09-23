@@ -9,10 +9,12 @@ import { Alert, Honeypot, TextareaField, TextField } from "~/components/ui/form"
 import { contactMessages } from "~/db/schema";
 import { contactSchema } from "~/lib/schemas/public";
 import { seo, siteUrlFrom } from "~/lib/seo";
-import { telLink, whatsappLink } from "~/lib/utils";
+import { escapeHtml, telLink, whatsappLink } from "~/lib/utils";
 import { validateForm, type FieldErrors } from "~/lib/validation";
 import { db } from "~/server/db.server";
+import { sendMail } from "~/server/mail.server";
 import { getClientIp, rateLimit } from "~/server/rate-limit.server";
+import { getSiteSettings } from "~/server/settings.server";
 import { isLikelyBot, parseSmallForm } from "~/server/uploads.server";
 import type { loader as layoutLoader } from "./layout";
 import type { Route } from "./+types/contact";
@@ -45,6 +47,23 @@ export async function action({ request }: Route.ActionArgs) {
   }
   const { privacy: _privacy, ...message } = result.data;
   await db.insert(contactMessages).values(message);
+
+  const settings = await getSiteSettings();
+  if (settings.email) {
+    await sendMail({
+      to: settings.email,
+      subject: `Nuevo mensaje de contacto: ${message.subject}`,
+      replyTo: message.email,
+      html: `
+        <p><strong>Nombre:</strong> ${escapeHtml(message.name)}</p>
+        <p><strong>Correo:</strong> ${escapeHtml(message.email)}</p>
+        ${message.phone ? `<p><strong>Teléfono:</strong> ${escapeHtml(message.phone)}</p>` : ""}
+        <p><strong>Asunto:</strong> ${escapeHtml(message.subject)}</p>
+        <p><strong>Mensaje:</strong><br>${escapeHtml(message.message).replace(/\n/g, "<br>")}</p>
+      `,
+    });
+  }
+
   return data<ActionResult>({ ok: true });
 }
 

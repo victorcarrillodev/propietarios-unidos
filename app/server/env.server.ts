@@ -11,6 +11,8 @@ const envSchema = z.object({
   SITE_URL: z.url().default("http://localhost:5173"),
   STORAGE_DIR: z.string().min(1).default("./storage"),
   TRUST_PROXY: z.stringbool().default(false),
+  RESEND_API_KEY: z.string().optional(),
+  MAIL_FROM: z.string().default("Propietarios Unidos <notificaciones@propietariosunidosblp.com.mx>"),
 });
 
 const parsed = envSchema.safeParse(process.env);

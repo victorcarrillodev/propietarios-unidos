@@ -52,3 +52,13 @@ export function toWhatsappNumber(phone: string | null) {
 export function telLink(phone: string) {
   return `tel:${phone.replace(/[^\d+]/g, "")}`;
 }
+
+/** Escapa texto para insertarlo de forma segura en HTML (correos, etc.). */
+export function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}

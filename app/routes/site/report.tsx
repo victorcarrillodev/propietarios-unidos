@@ -9,9 +9,12 @@ import { todayISO } from "~/lib/format";
 import { REPORT_TYPE_LABELS, toOptions } from "~/lib/labels";
 import { reportSchema } from "~/lib/schemas/public";
 import { seo, siteUrlFrom } from "~/lib/seo";
+import { escapeHtml } from "~/lib/utils";
 import { formValues, validateForm, type FieldErrors } from "~/lib/validation";
 import { db } from "~/server/db.server";
+import { sendMail } from "~/server/mail.server";
 import { getClientIp, rateLimit } from "~/server/rate-limit.server";
+import { getSiteSettings } from "~/server/settings.server";
 import { deleteFile, saveOptimizedImage } from "~/server/storage.server";
 import { getFiles, isLikelyBot, parseMultipartForm } from "~/server/uploads.server";
 import type { Route } from "./+types/report";
@@ -77,6 +80,26 @@ export async function action({ request }: Route.ActionArgs) {
     .insert(citizenReports)
     .values({ ...report, photoKeys })
     .returning({ folio: citizenReports.folio });
+
+  const settings = await getSiteSettings();
+  if (settings.email) {
+    await sendMail({
+      to: settings.email,
+      subject: `Nuevo reporte${created?.folio ? ` #${created.folio}` : ""}: ${REPORT_TYPE_LABELS[report.type]}`,
+      replyTo: report.reporterEmail || undefined,
+      html: `
+        <p><strong>Tipo:</strong> ${escapeHtml(REPORT_TYPE_LABELS[report.type])}</p>
+        ${report.occurredOn ? `<p><strong>Cuándo:</strong> ${escapeHtml(report.occurredOn)}</p>` : ""}
+        <p><strong>Dónde:</strong> ${escapeHtml(report.location)}</p>
+        <p><strong>Descripción:</strong><br>${escapeHtml(report.description).replace(/\n/g, "<br>")}</p>
+        ${photoKeys.length ? `<p><strong>Fotos adjuntas:</strong> ${photoKeys.length}</p>` : ""}
+        <hr>
+        <p><strong>Quien reporta:</strong> ${report.reporterName ? escapeHtml(report.reporterName) : "Anónimo"}</p>
+        ${report.reporterPhone ? `<p><strong>Teléfono:</strong> ${escapeHtml(report.reporterPhone)}</p>` : ""}
+        ${report.reporterEmail ? `<p><strong>Correo:</strong> ${escapeHtml(report.reporterEmail)}</p>` : ""}
+      `,
+    });
+  }
 
   return data<ActionResult>({ ok: true, folio: created?.folio ?? null });
 }
