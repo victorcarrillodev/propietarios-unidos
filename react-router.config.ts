@@ -12,5 +12,7 @@ export default {
     "*.propietariosunidos.mx",
     "propietariosunidos.com.mx",
     "*.propietariosunidos.com.mx",
+    "propietariosunidosblp.com.mx",
+    "*.propietariosunidosblp.com.mx",
   ],
 } satisfies Config;

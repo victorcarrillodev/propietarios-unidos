@@ -39,6 +39,19 @@ services:
     volumes:
       - storage:/app/storage
 
+  # Túnel de Cloudflare: conecta el servidor con internet sin abrir puertos.
+  cloudflared:
+    profiles: ["produccion"]
+    image: cloudflare/cloudflared:latest
+    container_name: propietarios-unidos-cloudflared
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${TUNNEL_TOKEN}
+    depends_on:
+      app:
+        condition: service_healthy
+
 volumes:
   pgdata:
   storage:
