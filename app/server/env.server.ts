@@ -13,6 +13,8 @@ const envSchema = z.object({
   TRUST_PROXY: z.stringbool().default(false),
   RESEND_API_KEY: z.string().optional(),
   MAIL_FROM: z.string().default("Propietarios Unidos <notificaciones@propietariosunidosblp.com.mx>"),
+  GA_MEASUREMENT_ID: z.string().regex(/^G-[A-Z0-9]+$/, "Debe verse como G-XXXXXXXXXX").optional(),
+  CONTENTSQUARE_TAG_ID: z.string().regex(/^[a-z0-9]{8,20}$/i, "Debe ser el Tag ID alfanumérico de Contentsquare").optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);

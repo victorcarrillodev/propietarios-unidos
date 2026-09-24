@@ -2,7 +2,8 @@ import "@fontsource-variable/fraunces/wght.css";
 import "@fontsource-variable/inter/wght.css";
 import frauncesWoff2 from "@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url";
 import interWoff2 from "@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
+import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration, useLocation, useRouteLoaderData } from "react-router";
+import { Analytics } from "~/components/site/analytics";
 import { env } from "~/server/env.server";
 import type { Route } from "./+types/root";
 import "./app.css";
@@ -37,10 +38,13 @@ const securityHeaders: Route.MiddlewareFunction = async (_args, next) => {
 export const middleware: Route.MiddlewareFunction[] = [securityHeaders];
 
 export function loader() {
-  return { siteUrl: env.SITE_URL };
+  return { siteUrl: env.SITE_URL, gaId: env.GA_MEASUREMENT_ID, contentsquareTagId: env.CONTENTSQUARE_TAG_ID };
 }
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const data = useRouteLoaderData<typeof loader>("root");
+  const isAdmin = useLocation().pathname.startsWith("/admin");
+
   return (
     <html lang="es-MX">
       <head>
@@ -49,6 +53,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="theme-color" content="#1b3924" />
         <Meta />
         <Links />
+        {/* Analítica solo en el sitio público, nunca en el panel de administración. */}
+        {!isAdmin && <Analytics gaId={data?.gaId} contentsquareTagId={data?.contentsquareTagId} />}
       </head>
       <body>
         {children}

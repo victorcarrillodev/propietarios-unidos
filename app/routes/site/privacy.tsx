@@ -52,9 +52,28 @@ export default function Privacy({ loaderData }: Route.ComponentProps) {
 
           <h2>Transferencias</h2>
           <p>
-            No vendemos ni compartimos tus datos con terceros, salvo cuando sea necesario para atender un reporte ante
-            autoridades o cuando la ley lo requiera.
+            No vendemos tus datos personales. Los compartimos con terceros solo cuando sea necesario para atender un
+            reporte ante autoridades, cuando la ley lo requiera, o con los siguientes proveedores que nos ayudan a
+            operar el sitio público (no se activan dentro del panel de administración):
           </p>
+          <ul>
+            <li>
+              <strong>Google Analytics</strong>: mide el uso del sitio (páginas vistas, dispositivo, ubicación
+              aproximada).{" "}
+              <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">
+                Política de privacidad de Google
+              </a>
+              .
+            </li>
+            <li>
+              <strong>Contentsquare</strong> (antes Hotjar): analiza cómo navegas el sitio (mapas de calor y
+              grabaciones de sesión anonimizadas) para ayudarnos a mejorarlo.{" "}
+              <a href="https://contentsquare.com/privacy-policy/" target="_blank" rel="noopener noreferrer">
+                Política de privacidad de Contentsquare
+              </a>
+              .
+            </li>
+          </ul>
 
           <h2>Tus derechos (ARCO)</h2>
           <p>
