@@ -12,6 +12,7 @@ export default [
     route("noticias", "routes/site/news.tsx"),
     route("noticias/:slug", "routes/site/news-post.tsx"),
     route("eventos", "routes/site/events.tsx"),
+    route("galeria", "routes/site/gallery.tsx"),
     route("transparencia", "routes/site/transparency.tsx"),
     route("reportar", "routes/site/report.tsx"),
     route("unete", "routes/site/join.tsx"),

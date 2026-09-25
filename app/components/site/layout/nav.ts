@@ -4,5 +4,6 @@ export const SITE_NAV = [
   { to: "/que-hacemos", label: "Qué hacemos" },
   { to: "/noticias", label: "Noticias" },
   { to: "/eventos", label: "Eventos" },
+  { to: "/galeria", label: "Galería" },
   { to: "/contacto", label: "Contacto" },
 ] as const;

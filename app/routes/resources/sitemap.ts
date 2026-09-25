@@ -10,6 +10,7 @@ const STATIC_PAGES = [
   { path: "/que-hacemos", priority: "0.8", changefreq: "weekly" },
   { path: "/noticias", priority: "0.7", changefreq: "weekly" },
   { path: "/eventos", priority: "0.7", changefreq: "weekly" },
+  { path: "/galeria", priority: "0.6", changefreq: "monthly" },
   { path: "/transparencia", priority: "0.6", changefreq: "monthly" },
   { path: "/reportar", priority: "0.6", changefreq: "yearly" },
   { path: "/unete", priority: "0.6", changefreq: "yearly" },
