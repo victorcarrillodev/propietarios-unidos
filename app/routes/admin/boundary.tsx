@@ -1,6 +1,6 @@
 import { ShieldX, TriangleAlert } from "lucide-react";
 import { isRouteErrorResponse, Outlet } from "react-router";
-import { ButtonLink } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui";
 import type { Route } from "./+types/boundary";
 
 // Ruta sin URL que envuelve todas las páginas del panel: si una falla, el error

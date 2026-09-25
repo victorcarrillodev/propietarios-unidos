@@ -2,28 +2,26 @@ import { count, desc, eq, ne } from "drizzle-orm";
 import { Archive, CheckCheck, Eye, Mail, Phone, Reply, Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
 import { FilterBar, FilterSelect } from "~/components/admin/filters";
-import { Button, ConfirmButton } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination } from "~/components/ui/data";
+import { Badge, Button, ConfirmButton, EmptyState, PageHeader, Pagination } from "~/components/ui";
 import { contactMessages } from "~/db/schema";
 import { MESSAGE_STATUSES, type MessageStatus } from "~/lib/enums";
 import { formatDateTime } from "~/lib/format";
 import { MESSAGE_STATUS_LABELS, MESSAGE_STATUS_TONES, toOptions } from "~/lib/labels";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { messageStatusSchema } from "~/lib/schemas/admin";
 import { telLink } from "~/lib/utils";
-import { pageParam, validateForm } from "~/lib/validation";
+import { validateForm } from "~/lib/validation";
 import { audit } from "~/server/audit.server";
 import { db } from "~/server/db.server";
 import { redirectWithToast } from "~/server/flash.server";
 import { getIntent, requireId, requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/messages";
 
-const PAGE_SIZE = 20;
-
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "inbox");
   const statusParam = url.searchParams.get("estado") ?? "";
   const status = (MESSAGE_STATUSES as readonly string[]).includes(statusParam) ? (statusParam as MessageStatus) : "";
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 20);
   // Sin filtro se ocultan los archivados.
   const where = status ? eq(contactMessages.status, status) : ne(contactMessages.status, "archivado");
 
@@ -33,11 +31,12 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .from(contactMessages)
       .where(where)
       .orderBy(desc(contactMessages.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(contactMessages).where(where),
   ]);
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), status };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, status };
 }
 
 export async function action({ request, context }: Route.ActionArgs) {

@@ -1,9 +1,17 @@
 import { eq } from "drizzle-orm";
 import { Mail, MessageCircle, Phone, Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
-import { ButtonLink, ConfirmButton, SubmitButton } from "~/components/ui/button";
-import { Badge, Card, DescriptionList, PageHeader } from "~/components/ui/data";
-import { SelectField, TextareaField } from "~/components/ui/form";
+import {
+  Badge,
+  ButtonLink,
+  Card,
+  ConfirmButton,
+  DescriptionList,
+  PageHeader,
+  SelectField,
+  SubmitButton,
+  TextareaField,
+} from "~/components/ui";
 import { citizenReports } from "~/db/schema";
 import { formatDate, formatDateTime } from "~/lib/format";
 import { REPORT_STATUS_LABELS, REPORT_STATUS_TONES, REPORT_TYPE_LABELS, toOptions } from "~/lib/labels";

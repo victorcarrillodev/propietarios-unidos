@@ -1,6 +1,6 @@
 import { ArrowRight, Eye, FileText, Handshake, Landmark, MessageCircle, Scale, TreePine, Users } from "lucide-react";
 import { PageHero, Section, SectionHeading } from "~/components/site/sections";
-import { ButtonLink, buttonClasses } from "~/components/ui/button";
+import { ButtonLink, buttonClasses } from "~/components/ui";
 import { seo, siteUrlFrom } from "~/lib/seo";
 import { parseBoard } from "~/lib/site-settings";
 import { initials, whatsappLink } from "~/lib/utils";
@@ -52,7 +52,7 @@ export default function About({ loaderData }: Route.ComponentProps) {
       <Section>
         <div className="grid gap-12 lg:grid-cols-[1.5fr_1fr]">
           <div className="prose-content text-lg" dangerouslySetInnerHTML={{ __html: aboutHtml }} />
-          <aside className="h-fit rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200">
+          <aside className="h-fit rounded-2xl bg-forest-50/80 p-6 shadow-sm ring-1 ring-forest-900/10">
             <h2 className="font-display text-xl font-semibold text-forest-950">En pocas palabras</h2>
             <dl className="mt-5 space-y-4 text-sm">
               <div className="flex gap-3">
@@ -91,15 +91,15 @@ export default function About({ loaderData }: Route.ComponentProps) {
         </div>
       </Section>
 
-      <Section className="bg-white">
+      <Section className="relative bg-gradient-to-b from-forest-50/70 via-white to-forest-50/40 border-y border-forest-900/5">
         <div className="grid gap-5 md:grid-cols-2">
-          <article className="rounded-3xl bg-forest-800 p-8 text-white sm:p-10">
+          <article className="rounded-3xl bg-gradient-to-br from-forest-900 via-forest-950 to-forest-900 p-8 text-white ring-1 ring-forest-700/60 shadow-lg sm:p-10">
             <p className="text-sm font-semibold tracking-wider text-amber-300 uppercase">Misión</p>
-            <p className="mt-4 font-display text-2xl leading-snug">{mission}</p>
+            <p className="mt-4 font-serif text-2xl leading-snug">{mission}</p>
           </article>
-          <article className="rounded-3xl bg-earth-100 p-8 text-forest-950 sm:p-10">
-            <p className="text-sm font-semibold tracking-wider text-earth-700 uppercase">Visión</p>
-            <p className="mt-4 font-display text-2xl leading-snug">{vision}</p>
+          <article className="rounded-3xl bg-forest-900/90 p-8 text-white ring-1 ring-forest-700/50 shadow-lg sm:p-10">
+            <p className="text-sm font-semibold tracking-wider text-amber-300 uppercase">Visión</p>
+            <p className="mt-4 font-serif text-2xl leading-snug">{vision}</p>
           </article>
         </div>
       </Section>
@@ -108,8 +108,11 @@ export default function About({ loaderData }: Route.ComponentProps) {
         <SectionHeading eyebrow="Valores" title="Lo que guía nuestro trabajo" align="center" />
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-5">
           {VALUES.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-stone-200">
-              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-forest-100 text-forest-700">
+            <li
+              key={title}
+              className="rounded-2xl bg-white p-6 text-center shadow-xs ring-1 ring-forest-900/10 transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-forest-400/30"
+            >
+              <span className="mx-auto flex size-12 items-center justify-center rounded-full bg-forest-100 text-forest-700 ring-1 ring-forest-200/60">
                 <Icon className="size-6" aria-hidden />
               </span>
               <h3 className="mt-4 font-semibold text-forest-950">{title}</h3>
@@ -129,15 +132,15 @@ export default function About({ loaderData }: Route.ComponentProps) {
       )}
 
       {board.length > 0 && (
-        <Section>
+        <Section className="relative bg-gradient-to-b from-forest-50/80 via-forest-100/30 to-forest-50/70 border-y border-forest-900/10">
           <SectionHeading eyebrow="Mesa directiva" title="Quienes representan a la asociación" align="center" />
           <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {board.map((member) => (
               <li
                 key={`${member.role}-${member.name}`}
-                className="rounded-2xl bg-white p-6 text-center shadow-sm ring-1 ring-stone-200"
+                className="rounded-2xl bg-white p-6 text-center shadow-xs ring-1 ring-forest-900/10 transition-all hover:shadow-md hover:ring-forest-400/30"
               >
-                <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-forest-800 font-display text-xl text-white">
+                <span className="mx-auto flex size-16 items-center justify-center rounded-full bg-forest-800 font-display text-xl text-white shadow-xs">
                   {initials(member.name)}
                 </span>
                 <p className="mt-4 font-semibold text-forest-950">{member.name}</p>
@@ -149,7 +152,7 @@ export default function About({ loaderData }: Route.ComponentProps) {
       )}
 
       <Section className={board.length > 0 ? "bg-white" : undefined}>
-        <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-forest-900 p-8 text-white sm:p-10 lg:flex-row lg:items-center">
+        <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-gradient-to-br from-forest-900 via-forest-950 to-forest-900 p-8 text-white ring-1 ring-forest-700/60 shadow-lg sm:p-10 lg:flex-row lg:items-center">
           <div>
             <h2 className="font-display text-3xl font-semibold">Cuentas claras, bosque sano</h2>
             <p className="mt-2 max-w-xl text-forest-100">

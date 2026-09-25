@@ -1,14 +1,14 @@
 import { test, expect } from "@playwright/test";
 
 test.describe("Panel de Administración - Autenticación y Flujos de Trabajo", () => {
-  test("Redirige a /admin/login al intentar acceder a /admin sin sesión", async ({ page }) => {
+  test("Redirige a /login al intentar acceder a /admin sin sesión", async ({ page }) => {
     await page.goto("/admin");
-    await expect(page).toHaveURL(/.*\/admin\/login.*/);
+    await expect(page).toHaveURL(/.*\/login.*/);
     await expect(page.locator("h1")).toContainText(/Panel de administración/i);
   });
 
   test("Muestra error ante credenciales incorrectas", async ({ page }) => {
-    await page.goto("/admin/login");
+    await page.goto("/login");
 
     await page.fill("input[name='email']", "admin@propietariosunidos.mx");
     await page.fill("input[name='password']", "clave-equivocada-1234");
@@ -19,7 +19,7 @@ test.describe("Panel de Administración - Autenticación y Flujos de Trabajo", (
   });
 
   test("Inicia sesión exitosamente con credenciales válidas y carga el panel", async ({ page }) => {
-    await page.goto("/admin/login");
+    await page.goto("/login");
 
     await page.fill("input[name='email']", "admin@propietariosunidos.mx");
     await page.fill("input[name='password']", "gK43zbbSc5SIXxLG");

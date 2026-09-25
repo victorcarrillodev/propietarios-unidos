@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 import { ExternalLink, Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
-import { PostForm } from "~/components/admin/post-form";
-import { buttonClasses, ConfirmButton } from "~/components/ui/button";
-import { Card, PageHeader } from "~/components/ui/data";
+import { PostForm } from "~/components/admin/forms";
+import { buttonClasses, Card, ConfirmButton, PageHeader } from "~/components/ui";
 import { posts } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
 import { postSchema } from "~/lib/schemas/admin";

@@ -1,7 +1,7 @@
 import { sql } from "drizzle-orm";
 import { data, Outlet } from "react-router";
 import { AdminShell } from "~/components/admin/shell";
-import { Toaster } from "~/components/ui/toaster";
+import { Toaster } from "~/components/ui";
 import { can } from "~/lib/permissions";
 import { db } from "~/server/db.server";
 import { readToast } from "~/server/flash.server";

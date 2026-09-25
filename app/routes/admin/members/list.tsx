@@ -2,23 +2,20 @@ import { asc, count, sql } from "drizzle-orm";
 import { Download, Plus, Users } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { FilterBar, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { ButtonLink, buttonClasses } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, buttonClasses, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { members } from "~/db/schema";
 import { formatDate } from "~/lib/format";
 import { MEMBER_STATUS_LABELS, MEMBER_STATUS_TONES, MEMBER_TYPE_LABELS, toOptions } from "~/lib/labels";
-import { pageParam } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import { memberWhere, readMemberFilters } from "~/server/queries/members.server";
 import type { Route } from "./+types/list";
 
-const PAGE_SIZE = 25;
-
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "members");
   const filters = readMemberFilters(url);
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
   const where = memberWhere(filters);
 
   const [rows, [{ total }]] = await Promise.all([
@@ -37,12 +34,13 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .from(members)
       .where(where)
       .orderBy(asc(members.fullName))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(members).where(where),
   ]);
 
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, filters };
 }
 
 export default function MembersList({ loaderData }: Route.ComponentProps) {

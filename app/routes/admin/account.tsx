@@ -1,9 +1,7 @@
 import { eq } from "drizzle-orm";
 import { KeyRound, UserRound } from "lucide-react";
 import { data, Form } from "react-router";
-import { SubmitButton } from "~/components/ui/button";
-import { Card, DescriptionList, PageHeader } from "~/components/ui/data";
-import { TextField } from "~/components/ui/form";
+import { Card, DescriptionList, PageHeader, SubmitButton, TextField } from "~/components/ui";
 import { users } from "~/db/schema";
 import { ROLE_LABELS } from "~/lib/labels";
 import { changePasswordSchema, profileSchema } from "~/lib/schemas/admin";

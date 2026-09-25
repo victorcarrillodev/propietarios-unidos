@@ -1,14 +1,12 @@
 import { and, count, desc, eq, lte } from "drizzle-orm";
 import { Newspaper } from "lucide-react";
 import { PageHero, PostCard, Section } from "~/components/site/sections";
-import { EmptyState, Pagination } from "~/components/ui/data";
+import { EmptyState, Pagination } from "~/components/ui";
 import { posts } from "~/db/schema";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { seo, siteUrlFrom } from "~/lib/seo";
-import { pageParam } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import type { Route } from "./+types/news";
-
-const PAGE_SIZE = 9;
 
 export const meta: Route.MetaFunction = ({ matches }) =>
   seo({
@@ -23,7 +21,7 @@ export function headers() {
 }
 
 export async function loader({ url }: Route.LoaderArgs) {
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 9);
   const where = and(eq(posts.published, true), lte(posts.publishedAt, new Date()));
   const [items, [{ total }]] = await Promise.all([
     db
@@ -38,11 +36,12 @@ export async function loader({ url }: Route.LoaderArgs) {
       .from(posts)
       .where(where)
       .orderBy(desc(posts.publishedAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
-    db.select({ total: count() }).from(posts).where(where),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
+    db.select({ total: count() }).from(posts),
   ]);
-  return { items, page, total, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)) };
+  const meta = getPaginationMeta(pagination, total);
+  return { items, page: meta.page, total: meta.total, pageCount: meta.pageCount };
 }
 
 export default function News({ loaderData }: Route.ComponentProps) {

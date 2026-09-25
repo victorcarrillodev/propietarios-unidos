@@ -1,10 +1,19 @@
 import { and, count, desc, eq, sql } from "drizzle-orm";
 import { MapPinned, Pencil, Plus, Trash2 } from "lucide-react";
 import { data, Form, Link } from "react-router";
-import { PropertyForm } from "~/components/admin/property-form";
-import { ButtonLink, ConfirmButton } from "~/components/ui/button";
-import { Badge, Card, DescriptionList, PageHeader, TableContainer, Td, Th } from "~/components/ui/data";
-import { Alert } from "~/components/ui/form";
+import { PropertyForm } from "~/components/admin/forms";
+import {
+  Alert,
+  Badge,
+  ButtonLink,
+  Card,
+  ConfirmButton,
+  DescriptionList,
+  PageHeader,
+  TableContainer,
+  Td,
+  Th,
+} from "~/components/ui";
 import { fees, members, payments, properties } from "~/db/schema";
 import { formatDate, formatDateTime, formatMoney } from "~/lib/format";
 import {

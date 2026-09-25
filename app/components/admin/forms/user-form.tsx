@@ -1,7 +1,5 @@
 import { Form } from "react-router";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { CheckboxField, SelectField, TextField } from "~/components/ui/form";
+import { ButtonLink, Card, CheckboxField, SelectField, SubmitButton, TextField } from "~/components/ui";
 import { USER_ROLES, type UserRole } from "~/lib/enums";
 import { ROLE_LABELS, toOptions } from "~/lib/labels";
 import type { FieldErrors } from "~/lib/validation";

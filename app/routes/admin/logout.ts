@@ -12,5 +12,5 @@ export async function action({ request }: Route.ActionArgs) {
   const session = await getSessionUser(request);
   const cookie = await destroyUserSession(request);
   if (session) await audit({ userId: session.user.id, action: "auth.logout", summary: "Cerró sesión" });
-  return redirect("/admin/login", { headers: { "Set-Cookie": cookie } });
+  return redirect("/login", { headers: { "Set-Cookie": cookie } });
 }

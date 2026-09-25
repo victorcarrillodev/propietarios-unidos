@@ -1,5 +1,5 @@
 import { CalendarDays, MapPin, Users } from "lucide-react";
-import { Badge } from "~/components/ui/badge";
+import { Badge } from "~/components/ui";
 import type { RecordType } from "~/lib/enums";
 import { formatDate } from "~/lib/format";
 import { RECORD_TYPE_LABELS, RECORD_TYPE_TONES } from "~/lib/labels";

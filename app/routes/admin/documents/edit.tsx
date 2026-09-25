@@ -1,9 +1,16 @@
 import { eq } from "drizzle-orm";
 import { Download, ExternalLink, Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
-import { DocumentFields } from "~/components/admin/document-fields";
-import { ButtonLink, buttonClasses, ConfirmButton, SubmitButton } from "~/components/ui/button";
-import { Card, DescriptionList, PageHeader } from "~/components/ui/data";
+import { DocumentFields } from "~/components/admin/forms";
+import {
+  ButtonLink,
+  buttonClasses,
+  Card,
+  ConfirmButton,
+  DescriptionList,
+  PageHeader,
+  SubmitButton,
+} from "~/components/ui";
 import { documents, users } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
 import { documentSchema } from "~/lib/schemas/admin";

@@ -2,18 +2,17 @@ import { and, count, desc, eq, sql, type SQL } from "drizzle-orm";
 import { Flag, Image } from "lucide-react";
 import { Link } from "react-router";
 import { FilterBar, FilterSelect } from "~/components/admin/filters";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { citizenReports } from "~/db/schema";
 import { REPORT_STATUSES, REPORT_TYPES } from "~/lib/enums";
 import { formatDate, formatDateTime } from "~/lib/format";
 import { REPORT_STATUS_LABELS, REPORT_STATUS_TONES, REPORT_TYPE_LABELS, toOptions } from "~/lib/labels";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { truncate } from "~/lib/utils";
-import { pageParam, pickEnum } from "~/lib/validation";
+import { pickEnum } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/reports";
-
-const PAGE_SIZE = 25;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "inbox");
@@ -21,7 +20,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
     status: pickEnum(url.searchParams.get("estado"), REPORT_STATUSES),
     type: pickEnum(url.searchParams.get("tipo"), REPORT_TYPES),
   };
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
 
   const conditions: SQL[] = [];
   if (filters.status) conditions.push(eq(citizenReports.status, filters.status));
@@ -44,12 +43,13 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .from(citizenReports)
       .where(where)
       .orderBy(sql`${citizenReports.status} = 'nuevo' desc`, desc(citizenReports.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(citizenReports).where(where),
   ]);
 
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, filters };
 }
 
 export default function Reports({ loaderData }: Route.ComponentProps) {

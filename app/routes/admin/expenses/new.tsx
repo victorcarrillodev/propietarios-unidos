@@ -1,6 +1,6 @@
 import { data } from "react-router";
-import { ExpenseForm } from "~/components/admin/expense-form";
-import { PageHeader } from "~/components/ui/data";
+import { ExpenseForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { expenses } from "~/db/schema";
 import { formatMoney, todayISO } from "~/lib/format";
 import { expenseSchema } from "~/lib/schemas/admin";

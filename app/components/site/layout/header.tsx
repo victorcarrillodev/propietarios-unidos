@@ -2,7 +2,7 @@ import { Menu, TriangleAlert, X } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { Logo } from "~/components/brand";
-import { buttonClasses } from "~/components/ui/button";
+import { buttonClasses } from "~/components/ui";
 import { cn } from "~/lib/utils";
 import { SITE_NAV } from "./nav";
 
@@ -15,7 +15,7 @@ export function SiteHeader() {
   }, [location.pathname]);
 
   return (
-    <header className="sticky top-0 z-40 border-b border-forest-900/10 bg-cream/90 backdrop-blur-md supports-[backdrop-filter]:bg-cream/80 transition-shadow">
+    <header className="sticky top-0 z-40 border-b border-forest-900/10 bg-forest-50/90 backdrop-blur-md supports-[backdrop-filter]:bg-forest-50/85 transition-shadow shadow-xs">
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2.5 focus:shadow-lg focus:ring-2 focus:ring-forest-600"
@@ -39,8 +39,8 @@ export function SiteHeader() {
                     cn(
                       "relative rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150",
                       isActive
-                        ? "bg-forest-100/90 text-forest-950 font-semibold shadow-xs"
-                        : "text-stone-700 hover:bg-forest-50/70 hover:text-forest-900",
+                        ? "bg-forest-200/80 text-forest-950 font-semibold shadow-xs"
+                        : "text-stone-700 hover:bg-forest-100/70 hover:text-forest-900",
                     )
                   }
                 >
@@ -77,7 +77,7 @@ export function SiteHeader() {
             <Menu className="size-5 group-open:hidden" aria-hidden />
             <X className="hidden size-5 group-open:block" aria-hidden />
           </summary>
-          <div className="absolute inset-x-0 top-full border-b border-forest-900/10 bg-cream shadow-xl animate-in slide-in-from-top-2 duration-150">
+          <div className="absolute inset-x-0 top-full border-b border-forest-900/10 bg-forest-50/95 backdrop-blur-md shadow-xl animate-in slide-in-from-top-2 duration-150">
             <nav aria-label="Menú móvil" className="mx-auto max-w-6xl px-4 py-5 sm:px-6">
               <ul className="grid gap-1.5 sm:grid-cols-2">
                 {[{ to: "/", label: "Inicio" }, ...SITE_NAV, { to: "/transparencia", label: "Transparencia" }].map(

@@ -2,8 +2,7 @@ import { LockKeyhole } from "lucide-react";
 import { data, Form, Link, redirect } from "react-router";
 import { z } from "zod";
 import { LogoMark } from "~/components/brand";
-import { SubmitButton } from "~/components/ui/button";
-import { Alert, TextField } from "~/components/ui/form";
+import { Alert, SubmitButton, TextField } from "~/components/ui";
 import { audit } from "~/server/audit.server";
 import { authenticate, createUserSession, getSessionUser } from "~/server/auth.server";
 import { getClientIp, rateLimit, resetRateLimit } from "~/server/rate-limit.server";
@@ -16,7 +15,7 @@ export function meta() {
 /** Solo permite redirigir dentro del panel (evita redirecciones abiertas). */
 function safeRedirect(value: FormDataEntryValue | string | null) {
   if (typeof value !== "string" || !value.startsWith("/admin") || value.startsWith("//")) return "/admin";
-  if (value.startsWith("/admin/login") || value.startsWith("/admin/logout")) return "/admin";
+  if (value.startsWith("/login") || value.startsWith("/admin/login") || value.startsWith("/admin/logout")) return "/admin";
   return value;
 }
 

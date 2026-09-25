@@ -2,15 +2,12 @@ import { count, desc, eq } from "drizzle-orm";
 import { ArrowRight, Check, NotebookPen } from "lucide-react";
 import { PROGRAMS } from "~/components/site/programs";
 import { ActivityTimeline, PageHero, Section, SectionHeading } from "~/components/site/sections";
-import { ButtonLink } from "~/components/ui/button";
-import { EmptyState, Pagination } from "~/components/ui/data";
+import { ButtonLink, EmptyState, Pagination } from "~/components/ui";
 import { activityRecords } from "~/db/schema";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { seo, siteUrlFrom } from "~/lib/seo";
-import { pageParam } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import type { Route } from "./+types/work";
-
-const PAGE_SIZE = 10;
 
 export const meta: Route.MetaFunction = ({ matches }) =>
   seo({
@@ -26,7 +23,7 @@ export function headers() {
 }
 
 export async function loader({ url }: Route.LoaderArgs) {
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 10);
   const where = eq(activityRecords.isPublic, true);
   const [items, [{ total }]] = await Promise.all([
     db
@@ -42,11 +39,12 @@ export async function loader({ url }: Route.LoaderArgs) {
       .from(activityRecords)
       .where(where)
       .orderBy(desc(activityRecords.occurredOn), desc(activityRecords.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(activityRecords).where(where),
   ]);
-  return { items, page, total, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)) };
+  const meta = getPaginationMeta(pagination, total);
+  return { items, page: meta.page, total: meta.total, pageCount: meta.pageCount };
 }
 
 export default function Work({ loaderData }: Route.ComponentProps) {
@@ -60,16 +58,19 @@ export default function Work({ loaderData }: Route.ComponentProps) {
         description="Nuestras acciones buscan prevenir daños, mejorar el bosque y abrir canales de diálogo entre usuarios y propietarios."
       />
 
-      <Section>
+      <Section className="relative bg-gradient-to-b from-forest-50/70 via-white to-forest-50/30 border-b border-forest-900/5">
         <ul className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
           {PROGRAMS.map(({ icon: Icon, title, text, details }) => (
-            <li key={title} className="flex flex-col rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200">
-              <span className="flex size-12 items-center justify-center rounded-xl bg-forest-100 text-forest-700">
+            <li
+              key={title}
+              className="flex flex-col rounded-2xl bg-white p-6 shadow-xs ring-1 ring-forest-900/10 transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-forest-400/30"
+            >
+              <span className="flex size-12 items-center justify-center rounded-xl bg-forest-100 text-forest-800 ring-1 ring-forest-200/70">
                 <Icon className="size-6" aria-hidden />
               </span>
               <h2 className="mt-4 font-display text-xl font-semibold text-forest-950">{title}</h2>
               <p className="mt-2 leading-relaxed text-stone-600">{text}</p>
-              <ul className="mt-4 space-y-2 border-t border-stone-100 pt-4 text-sm text-stone-600">
+              <ul className="mt-4 space-y-2 border-t border-forest-100/80 pt-4 text-sm text-stone-600">
                 {details.map((detail) => (
                   <li key={detail} className="flex gap-2">
                     <Check className="mt-0.5 size-4 shrink-0 text-forest-600" aria-hidden />
@@ -82,7 +83,7 @@ export default function Work({ loaderData }: Route.ComponentProps) {
         </ul>
       </Section>
 
-      <Section className="bg-white" id="bitacora">
+      <Section id="bitacora">
         <div className="grid gap-12 lg:grid-cols-[1fr_1.6fr]">
           <div>
             <SectionHeading

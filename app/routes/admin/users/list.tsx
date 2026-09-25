@@ -1,8 +1,7 @@
 import { asc, desc } from "drizzle-orm";
 import { Plus, UsersRound } from "lucide-react";
 import { Link } from "react-router";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, EmptyState, PageHeader, TableContainer, Td, Th } from "~/components/ui";
 import { users } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
 import { ROLE_LABELS } from "~/lib/labels";

@@ -1,9 +1,7 @@
 import { FileUp } from "lucide-react";
 import { data, Form } from "react-router";
-import { DocumentFields } from "~/components/admin/document-fields";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card, PageHeader } from "~/components/ui/data";
-import { Alert } from "~/components/ui/form";
+import { DocumentFields } from "~/components/admin/forms";
+import { Alert, ButtonLink, Card, PageHeader, SubmitButton } from "~/components/ui";
 import { documents } from "~/db/schema";
 import { documentSchema } from "~/lib/schemas/admin";
 import { formValues, validateForm, type FieldErrors } from "~/lib/validation";

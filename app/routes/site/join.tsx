@@ -2,8 +2,7 @@ import { CircleCheck, HandHeart, Megaphone, ShieldCheck, Users } from "lucide-re
 import { data, Form } from "react-router";
 import { PrivacyConsent } from "~/components/site/privacy-consent";
 import { Container, PageHero } from "~/components/site/sections";
-import { SubmitButton } from "~/components/ui/button";
-import { Alert, Honeypot, SelectField, TextareaField, TextField } from "~/components/ui/form";
+import { Alert, Honeypot, SelectField, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import { membershipRequests } from "~/db/schema";
 import { MUNICIPALITIES } from "~/lib/enums";
 import { MEMBER_TYPE_LABELS, toOptions } from "~/lib/labels";

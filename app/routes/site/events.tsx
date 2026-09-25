@@ -1,7 +1,7 @@
 import { and, asc, desc, eq, gte, isNull, lt, or } from "drizzle-orm";
 import { CalendarDays } from "lucide-react";
 import { EventCard, PageHero, Section, SectionHeading } from "~/components/site/sections";
-import { EmptyState } from "~/components/ui/data";
+import { EmptyState } from "~/components/ui";
 import { events } from "~/db/schema";
 import { seo, siteUrlFrom } from "~/lib/seo";
 import { db } from "~/server/db.server";

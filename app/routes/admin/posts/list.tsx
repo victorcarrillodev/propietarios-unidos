@@ -1,20 +1,17 @@
 import { count, desc, eq } from "drizzle-orm";
 import { ExternalLink, Newspaper, Plus } from "lucide-react";
 import { Link } from "react-router";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { posts, users } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
-import { pageParam } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/list";
 
-const PAGE_SIZE = 25;
-
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "content");
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
   const [rows, [{ total }]] = await Promise.all([
     db
       .select({
@@ -30,11 +27,12 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .from(posts)
       .leftJoin(users, eq(users.id, posts.authorId))
       .orderBy(desc(posts.updatedAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(posts),
   ]);
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), now: new Date() };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, now: new Date() };
 }
 
 export default function PostsList({ loaderData }: Route.ComponentProps) {

@@ -1,6 +1,6 @@
 import { data } from "react-router";
-import { RecordForm } from "~/components/admin/record-form";
-import { PageHeader } from "~/components/ui/data";
+import { RecordForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { activityRecords } from "~/db/schema";
 import { todayISO } from "~/lib/format";
 import { recordSchema } from "~/lib/schemas/admin";

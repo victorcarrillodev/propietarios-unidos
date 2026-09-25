@@ -1,5 +1,5 @@
-import { ExternalLink, LogOut, Menu, UserRound, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { ChevronRight, ExternalLink, LogOut, Menu, UserRound, X, type LucideIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { Form, Link, NavLink, useLocation, useNavigation } from "react-router";
 import { LogoMark } from "~/components/brand";
 import type { UserRole } from "~/lib/enums";
@@ -11,50 +11,108 @@ import { ADMIN_NAV, type BadgeKey } from "./nav";
 export type ShellUser = { name: string; email: string; role: UserRole };
 export type Badges = Record<BadgeKey, number>;
 
-function AdminNav({ role, badges }: { role: UserRole; badges: Badges }) {
+function NavItemLink({
+  to,
+  label,
+  icon: Icon,
+  end,
+  count,
+  indent = false,
+}: {
+  to: string;
+  label: string;
+  icon: LucideIcon;
+  end?: boolean;
+  count: number;
+  indent?: boolean;
+}) {
   return (
-    <nav aria-label="Navegación del panel" className="space-y-6">
+    <li>
+      <NavLink
+        to={to}
+        end={end}
+        prefetch="intent"
+        className={({ isActive }) =>
+          cn(
+            "flex items-center gap-3 rounded-xl py-2 text-sm font-medium transition-all duration-150",
+            indent ? "pr-3 pl-8" : "px-3",
+            isActive
+              ? "bg-white/12 text-white shadow-xs font-semibold"
+              : "text-forest-100/90 hover:bg-white/6 hover:text-white",
+          )
+        }
+      >
+        <Icon className="size-4 shrink-0 text-forest-300" aria-hidden />
+        <span className="flex-1">{label}</span>
+        {count > 0 && (
+          <span className="rounded-full bg-amber-400 px-2 py-0.5 text-xs leading-none font-bold text-forest-950 shadow-xs">
+            {count}
+            <span className="sr-only"> pendientes</span>
+          </span>
+        )}
+      </NavLink>
+    </li>
+  );
+}
+
+/** Grupos con nombre se colapsan; el grupo de la sección activa se abre solo la primera vez, luego el clic del usuario manda. */
+function AdminNav({ role, badges }: { role: UserRole; badges: Badges }) {
+  const location = useLocation();
+  const [expanded, setExpanded] = useState<Record<string, boolean>>({});
+
+  return (
+    <nav aria-label="Navegación del panel" className="space-y-1">
       {ADMIN_NAV.map((group, index) => {
         const items = group.items.filter((item) => !item.module || can(role, item.module));
         if (items.length === 0) return null;
-        return (
-          <div key={group.label ?? index}>
-            {group.label && (
-              <p className="px-3 pb-2 text-[11px] font-semibold tracking-wider text-forest-300/70 uppercase">
-                {group.label}
-              </p>
-            )}
-            <ul className="space-y-0.5">
-              {items.map(({ to, label, icon: Icon, end, badge }) => {
-                const count = badge ? badges[badge] : 0;
-                return (
-                  <li key={to}>
-                    <NavLink
-                      to={to}
-                      end={end}
-                      prefetch="intent"
-                      className={({ isActive }) =>
-                        cn(
-                          "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-all duration-150",
-                          isActive
-                            ? "bg-white/12 text-white shadow-xs font-semibold"
-                            : "text-forest-100/90 hover:bg-white/6 hover:text-white",
-                        )
-                      }
-                    >
-                      <Icon className="size-4 shrink-0 text-forest-300" aria-hidden />
-                      <span className="flex-1">{label}</span>
-                      {count > 0 && (
-                        <span className="rounded-full bg-amber-400 px-2 py-0.5 text-xs leading-none font-bold text-forest-950 shadow-xs">
-                          {count}
-                          <span className="sr-only"> pendientes</span>
-                        </span>
-                      )}
-                    </NavLink>
-                  </li>
-                );
-              })}
+
+        if (!group.label) {
+          return (
+            <ul key={index} className="space-y-0.5 pb-5">
+              {items.map((item) => (
+                <NavItemLink key={item.to} to={item.to} label={item.label} icon={item.icon} end={item.end} count={item.badge ? badges[item.badge] : 0} />
+              ))}
             </ul>
+          );
+        }
+
+        const isActiveGroup = items.some((item) =>
+          item.end ? location.pathname === item.to : location.pathname.startsWith(item.to),
+        );
+        const isOpen = expanded[group.label] ?? isActiveGroup;
+        const pendingCount = items.reduce((sum, item) => sum + (item.badge ? badges[item.badge] : 0), 0);
+
+        return (
+          <div key={group.label}>
+            <button
+              type="button"
+              onClick={() => setExpanded((prev) => ({ ...prev, [group.label!]: !isOpen }))}
+              aria-expanded={isOpen}
+              className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-[11px] font-semibold tracking-wider text-forest-300/70 uppercase transition-colors hover:text-forest-100"
+            >
+              <ChevronRight className={cn("size-3 shrink-0 transition-transform duration-150", isOpen && "rotate-90")} aria-hidden />
+              <span className="flex-1">{group.label}</span>
+              {!isOpen && pendingCount > 0 && (
+                <span className="rounded-full bg-amber-400 px-1.5 py-px text-[10px] leading-none font-bold text-forest-950">
+                  {pendingCount}
+                </span>
+              )}
+            </button>
+            {isOpen && (
+              <ul className="space-y-0.5 pb-4">
+                {items.map((item) => (
+                  <NavItemLink
+                    key={item.to}
+                    to={item.to}
+                    label={item.label}
+                    icon={item.icon}
+                    end={item.end}
+                    count={item.badge ? badges[item.badge] : 0}
+                    indent
+                  />
+                ))}
+              </ul>
+            )}
           </div>
         );
       })}

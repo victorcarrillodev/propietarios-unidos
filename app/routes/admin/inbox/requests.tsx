@@ -2,22 +2,19 @@ import { and, count, desc, eq } from "drizzle-orm";
 import { Check, Mail, MessageCircle, Phone, Trash2, UserPlus, X } from "lucide-react";
 import { data, Form, Link } from "react-router";
 import { FilterBar, FilterSelect } from "~/components/admin/filters";
-import { Button, ConfirmButton } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination } from "~/components/ui/data";
+import { Badge, Button, ConfirmButton, EmptyState, PageHeader, Pagination } from "~/components/ui";
 import { members, membershipRequests, properties, users } from "~/db/schema";
 import { REQUEST_STATUSES, type RequestStatus } from "~/lib/enums";
 import { formatDateTime, todayISO } from "~/lib/format";
 import { MEMBER_TYPE_LABELS, REQUEST_STATUS_LABELS, REQUEST_STATUS_TONES, toOptions } from "~/lib/labels";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { can } from "~/lib/permissions";
 import { telLink, toWhatsappNumber, whatsappLink } from "~/lib/utils";
-import { pageParam } from "~/lib/validation";
 import { audit } from "~/server/audit.server";
 import { db } from "~/server/db.server";
 import { redirectWithToast } from "~/server/flash.server";
 import { getIntent, notFound, requireId, requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/requests";
-
-const PAGE_SIZE = 20;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   const user = requireModule(context, "inbox");
@@ -25,7 +22,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
   // Por defecto se muestran las pendientes; "todas" quita el filtro.
   const status: RequestStatus | "" =
     statusParam === null ? "pendiente" : (REQUEST_STATUSES as readonly string[]).includes(statusParam) ? (statusParam as RequestStatus) : "";
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 20);
   const where = status ? eq(membershipRequests.status, status) : undefined;
 
   const [rows, [{ total }]] = await Promise.all([
@@ -35,16 +32,17 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .leftJoin(users, eq(users.id, membershipRequests.reviewedBy))
       .where(where)
       .orderBy(desc(membershipRequests.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(membershipRequests).where(where),
   ]);
 
+  const meta = getPaginationMeta(pagination, total);
   return {
     rows: rows.map((row) => ({ ...row, whatsapp: toWhatsappNumber(row.request.phone) })),
-    total,
-    page,
-    pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+    total: meta.total,
+    page: meta.page,
+    pageCount: meta.pageCount,
     status,
     canManageMembers: can(user.role, "members"),
   };

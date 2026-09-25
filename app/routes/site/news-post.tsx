@@ -3,7 +3,7 @@ import { ArrowLeft, MessageCircle } from "lucide-react";
 import { data, Link, useRouteLoaderData } from "react-router";
 import { FacebookIcon } from "~/components/brand";
 import { Container, PostCard, Section } from "~/components/site/sections";
-import { ButtonLink } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui";
 import { posts } from "~/db/schema";
 import { formatTimestampDate } from "~/lib/format";
 import { seo, siteUrlFrom } from "~/lib/seo";
@@ -81,7 +81,7 @@ export default function NewsPost({ loaderData, params }: Route.ComponentProps) {
             >
               <ArrowLeft className="size-4" aria-hidden /> Noticias
             </Link>
-            <h1 className="mt-4 font-display text-4xl leading-tight font-semibold tracking-tight sm:text-5xl">
+            <h1 className="mt-4 font-display text-4xl leading-tight sm:text-5xl">
               {post.title}
             </h1>
             <p className="mt-4 text-forest-200">{formatTimestampDate(post.publishedAt)}</p>
@@ -97,7 +97,7 @@ export default function NewsPost({ loaderData, params }: Route.ComponentProps) {
               className="-mt-24 mb-10 w-full rounded-2xl object-cover shadow-lg sm:-mt-28"
             />
           )}
-          {post.excerpt && <p className="mb-8 text-xl leading-relaxed text-stone-700">{post.excerpt}</p>}
+          {post.excerpt && <p className="mb-8 font-serif text-xl leading-relaxed text-stone-700">{post.excerpt}</p>}
           <div className="prose-content text-lg" dangerouslySetInnerHTML={{ __html: post.html }} />
 
           <div className="mt-12 flex flex-wrap items-center gap-3 border-t border-stone-200 pt-6">

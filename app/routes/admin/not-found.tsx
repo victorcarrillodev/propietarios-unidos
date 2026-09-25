@@ -1,6 +1,5 @@
 import { data } from "react-router";
-import { ButtonLink } from "~/components/ui/button";
-import { PageHeader } from "~/components/ui/data";
+import { ButtonLink, PageHeader } from "~/components/ui";
 
 export function loader() {
   return data(null, { status: 404 });

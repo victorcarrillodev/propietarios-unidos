@@ -1,7 +1,5 @@
 import { Form } from "react-router";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { SelectField, TextareaField, TextField } from "~/components/ui/form";
+import { ButtonLink, Card, SelectField, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import type { Expense } from "~/db/schema";
 import { centsToInput } from "~/lib/format";
 import { EXPENSE_CATEGORY_LABELS, PAYMENT_METHOD_LABELS, toOptions } from "~/lib/labels";

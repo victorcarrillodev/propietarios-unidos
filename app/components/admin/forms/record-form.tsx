@@ -1,7 +1,5 @@
 import { Form } from "react-router";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { CheckboxField, SelectField, TextareaField, TextField } from "~/components/ui/form";
+import { ButtonLink, Card, CheckboxField, SelectField, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import type { ActivityRecord } from "~/db/schema";
 import { RECORD_TYPE_LABELS, toOptions } from "~/lib/labels";
 import type { FieldErrors } from "~/lib/validation";

@@ -1,8 +1,7 @@
 import { RotateCcw, Search } from "lucide-react";
 import type { ReactNode } from "react";
 import { Form, Link, useLocation } from "react-router";
-import { Button } from "~/components/ui/button";
-import { inputClasses, type Option } from "~/components/ui/form";
+import { Button, inputClasses, type Option } from "~/components/ui";
 import { cn } from "~/lib/utils";
 
 /** Barra de filtros (formulario GET: los filtros quedan en la URL y se pueden compartir o recargar). */

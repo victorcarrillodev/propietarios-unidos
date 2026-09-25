@@ -2,8 +2,7 @@ import { count, desc, eq, sql } from "drizzle-orm";
 import { BadgeDollarSign, ClipboardList, Download, HandCoins, Plus } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { FilterBar, FilterDate, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { ButtonLink, buttonClasses } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, buttonClasses, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { fees, members, payments } from "~/db/schema";
 import { formatDate, formatMoney } from "~/lib/format";
 import {
@@ -13,18 +12,16 @@ import {
   PAYMENT_STATUS_TONES,
   toOptions,
 } from "~/lib/labels";
-import { pageParam } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import { paymentWhere, readPaymentFilters } from "~/server/queries/finance.server";
 import type { Route } from "./+types/list";
 
-const PAGE_SIZE = 25;
-
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "finance");
   const filters = readPaymentFilters(url);
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
   const where = paymentWhere(filters);
 
   const [rows, [summary], filteredMember] = await Promise.all([
@@ -48,8 +45,8 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .leftJoin(fees, eq(fees.id, payments.feeId))
       .where(where)
       .orderBy(desc(payments.paidOn), desc(payments.folio))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db
       .select({
         total: count(),
@@ -63,13 +60,14 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       : [],
   ]);
 
-  const total = summary?.total ?? 0;
+  const rawTotal = summary?.total ?? 0;
+  const meta = getPaginationMeta(pagination, rawTotal);
   return {
     rows,
-    total,
+    total: meta.total,
     validCents: summary?.validCents ?? 0,
-    page,
-    pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)),
+    page: meta.page,
+    pageCount: meta.pageCount,
     filters,
     memberName: filteredMember[0]?.fullName ?? null,
   };

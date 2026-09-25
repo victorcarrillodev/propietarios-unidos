@@ -2,23 +2,20 @@ import { count, desc, sql } from "drizzle-orm";
 import { Download, Plus, Receipt } from "lucide-react";
 import { Link, useLocation } from "react-router";
 import { FilterBar, FilterDate, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { ButtonLink, buttonClasses } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, buttonClasses, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { expenses } from "~/db/schema";
 import { formatDate, formatMoney } from "~/lib/format";
 import { EXPENSE_CATEGORY_LABELS, PAYMENT_METHOD_LABELS, toOptions } from "~/lib/labels";
-import { pageParam } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import { expenseWhere, readExpenseFilters } from "~/server/queries/finance.server";
 import type { Route } from "./+types/list";
 
-const PAGE_SIZE = 25;
-
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "finance");
   const filters = readExpenseFilters(url);
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
   const where = expenseWhere(filters);
 
   const [rows, [summary]] = await Promise.all([
@@ -27,15 +24,16 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .from(expenses)
       .where(where)
       .orderBy(desc(expenses.spentOn), desc(expenses.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db
       .select({ total: count(), sumCents: sql<number>`coalesce(sum(${expenses.amountCents}), 0)::float8`.mapWith(Number) })
       .from(expenses)
       .where(where),
   ]);
-  const total = summary?.total ?? 0;
-  return { rows, total, sumCents: summary?.sumCents ?? 0, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
+  const rawTotal = summary?.total ?? 0;
+  const meta = getPaginationMeta(pagination, rawTotal);
+  return { rows, total: meta.total, sumCents: summary?.sumCents ?? 0, page: meta.page, pageCount: meta.pageCount, filters };
 }
 
 export default function ExpensesList({ loaderData }: Route.ComponentProps) {

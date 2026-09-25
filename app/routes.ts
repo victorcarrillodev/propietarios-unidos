@@ -28,9 +28,10 @@ export default [
   route("healthz", "routes/resources/healthz.ts"),
 
   // ---------------------------------------------------------------------------
-  // Panel de administración
+  // Panel de administración y autenticación
   // ---------------------------------------------------------------------------
-  route("admin/login", "routes/admin/login.tsx"),
+  route("login", "routes/admin/login.tsx"),
+  route("admin/login", "routes/admin/login-redirect.ts"),
   route("admin/logout", "routes/admin/logout.ts"),
   route("admin", "routes/admin/layout.tsx", [
     layout("routes/admin/boundary.tsx", [

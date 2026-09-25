@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from "@testing-library/react";
 import { describe, expect, it, vi } from "vitest";
 import { MemoryRouter } from "react-router";
-import { Button, ButtonLink, ConfirmButton, buttonClasses } from "./button";
+import { Button, ButtonLink, buttonClasses } from "./button";
 
 describe("Button Component", () => {
   it("renders with default type button and text", () => {
@@ -50,31 +50,5 @@ describe("Button Component", () => {
     const link = screen.getByRole("link", { name: "Ir al panel" });
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute("href", "/admin");
-  });
-
-  it("ConfirmButton asks for confirmation before triggering submit", () => {
-    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(true);
-    const handleClick = vi.fn();
-
-    render(<ConfirmButton message="¿Seguro?" onClick={handleClick}>Borrar</ConfirmButton>);
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(confirmSpy).toHaveBeenCalledWith("¿Seguro?");
-    expect(handleClick).toHaveBeenCalledTimes(1);
-
-    confirmSpy.mockRestore();
-  });
-
-  it("ConfirmButton prevents action if user cancels confirmation dialog", () => {
-    const confirmSpy = vi.spyOn(window, "confirm").mockReturnValue(false);
-    const handleClick = vi.fn();
-
-    render(<ConfirmButton message="¿Seguro?" onClick={handleClick}>Borrar</ConfirmButton>);
-    fireEvent.click(screen.getByRole("button"));
-
-    expect(confirmSpy).toHaveBeenCalledWith("¿Seguro?");
-    expect(handleClick).not.toHaveBeenCalled();
-
-    confirmSpy.mockRestore();
   });
 });

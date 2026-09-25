@@ -1,7 +1,7 @@
 import { eq } from "drizzle-orm";
 import { data } from "react-router";
-import { MemberForm } from "~/components/admin/member-form";
-import { PageHeader } from "~/components/ui/data";
+import { MemberForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { members } from "~/db/schema";
 import { memberSchema } from "~/lib/schemas/admin";
 import { validateForm } from "~/lib/validation";

@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 import { Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
-import { ExpenseForm } from "~/components/admin/expense-form";
-import { ConfirmButton } from "~/components/ui/button";
-import { Card, PageHeader } from "~/components/ui/data";
+import { ExpenseForm } from "~/components/admin/forms";
+import { Card, ConfirmButton, PageHeader } from "~/components/ui";
 import { expenses } from "~/db/schema";
 import { formatDateTime, formatMoney } from "~/lib/format";
 import { expenseSchema } from "~/lib/schemas/admin";

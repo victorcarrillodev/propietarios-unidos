@@ -1,6 +1,6 @@
 import { data } from "react-router";
-import { PostForm } from "~/components/admin/post-form";
-import { PageHeader } from "~/components/ui/data";
+import { PostForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { posts } from "~/db/schema";
 import { postSchema } from "~/lib/schemas/admin";
 import { formValues, validateForm, type FieldErrors } from "~/lib/validation";

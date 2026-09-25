@@ -1,6 +1,6 @@
 import { data } from "react-router";
-import { EventForm } from "~/components/admin/event-form";
-import { PageHeader } from "~/components/ui/data";
+import { EventForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { events } from "~/db/schema";
 import { eventSchema } from "~/lib/schemas/admin";
 import { validateForm } from "~/lib/validation";

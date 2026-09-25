@@ -16,12 +16,13 @@ export function PageHero({
   children,
 }: PageHeroProps) {
   return (
-    <section className="relative overflow-hidden bg-forest-900 text-white">
-      <TopoPattern className="text-white/[0.07]" />
+    <section className="relative overflow-hidden bg-gradient-to-b from-forest-950 via-forest-900 to-forest-950 text-white border-b border-forest-800/40">
+      <TopoPattern className="text-white/[0.06]" />
+      <div className="pointer-events-none absolute -top-24 right-1/4 size-96 rounded-full bg-forest-600/15 blur-3xl" aria-hidden />
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-forest-950/20 to-forest-950/60" aria-hidden />
       <Container className="relative py-16 sm:py-20 lg:py-24">
         {eyebrow && <p className="text-xs font-semibold tracking-widest text-amber-300 uppercase">{eyebrow}</p>}
-        <h1 className="mt-2.5 max-w-3xl font-display text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+        <h1 className="mt-2.5 max-w-3xl font-display text-4xl sm:text-5xl lg:text-6xl">
           {title}
         </h1>
         {description && (

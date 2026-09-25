@@ -1,7 +1,7 @@
 import { and, count, eq, ne } from "drizzle-orm";
 import { data } from "react-router";
-import { UserForm } from "~/components/admin/user-form";
-import { PageHeader } from "~/components/ui/data";
+import { UserForm } from "~/components/admin/forms";
+import { PageHeader } from "~/components/ui";
 import { users } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
 import { ROLE_LABELS } from "~/lib/labels";

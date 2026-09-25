@@ -1,15 +1,15 @@
 import { and, asc, count, desc, eq, sql, type SQL } from "drizzle-orm";
 import { ScrollText } from "lucide-react";
 import { FilterBar, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { auditLogs, users } from "~/db/schema";
 import { formatDateTime } from "~/lib/format";
-import { likeEscape, pageParam } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
+import { likeEscape } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/audit";
 
-const PAGE_SIZE = 50;
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
@@ -19,7 +19,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
     q: (url.searchParams.get("q") ?? "").trim().slice(0, 100),
     userId: UUID_RE.test(userParam) ? userParam : "",
   };
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 50);
 
   const conditions: SQL[] = [];
   if (filters.userId) conditions.push(eq(auditLogs.userId, filters.userId));
@@ -41,13 +41,14 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .leftJoin(users, eq(users.id, auditLogs.userId))
       .where(where)
       .orderBy(desc(auditLogs.createdAt), desc(auditLogs.id))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(auditLogs).where(where),
     db.select({ id: users.id, name: users.name }).from(users).orderBy(asc(users.name)),
   ]);
 
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters, userOptions };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, filters, userOptions };
 }
 
 export default function Audit({ loaderData }: Route.ComponentProps) {

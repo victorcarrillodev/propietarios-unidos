@@ -1,7 +1,5 @@
 import { Form } from "react-router";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { CheckboxField, TextareaField, TextField } from "~/components/ui/form";
+import { ButtonLink, Card, CheckboxField, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import type { EventRow } from "~/db/schema";
 import { dateToLocalInput } from "~/lib/format";
 import type { FieldErrors } from "~/lib/validation";

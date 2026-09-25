@@ -2,19 +2,17 @@ import { and, count, desc, eq, sql, type SQL } from "drizzle-orm";
 import { Download, FileText, FolderOpen, Globe, Lock, Upload } from "lucide-react";
 import { Link } from "react-router";
 import { FilterBar, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { documents, users } from "~/db/schema";
 import { DOCUMENT_CATEGORIES } from "~/lib/enums";
 import { formatDate, formatTimestampDate } from "~/lib/format";
 import { DOCUMENT_CATEGORY_LABELS, toOptions } from "~/lib/labels";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
 import { formatFileSize } from "~/lib/utils";
-import { likeEscape, pageParam, pickEnum } from "~/lib/validation";
+import { likeEscape, pickEnum } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/list";
-
-const PAGE_SIZE = 25;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "documents");
@@ -24,7 +22,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
     category: pickEnum(params.get("categoria"), DOCUMENT_CATEGORIES),
     visibility: pickEnum(params.get("visibilidad"), ["publico", "interno"]),
   };
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
 
   const conditions: SQL[] = [];
   if (filters.category) conditions.push(eq(documents.category, filters.category));
@@ -55,12 +53,13 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .leftJoin(users, eq(users.id, documents.uploadedBy))
       .where(where)
       .orderBy(desc(documents.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(documents).where(where),
   ]);
 
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, filters };
 }
 
 export default function DocumentsList({ loaderData }: Route.ComponentProps) {

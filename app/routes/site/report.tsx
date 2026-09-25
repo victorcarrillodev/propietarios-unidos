@@ -2,8 +2,15 @@ import { Camera, CircleCheck, Phone, ShieldAlert } from "lucide-react";
 import { data, Form } from "react-router";
 import { PrivacyConsent } from "~/components/site/privacy-consent";
 import { Container, PageHero } from "~/components/site/sections";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Alert, Honeypot, SelectField, TextareaField, TextField } from "~/components/ui/form";
+import {
+  Alert,
+  ButtonLink,
+  Honeypot,
+  SelectField,
+  SubmitButton,
+  TextareaField,
+  TextField,
+} from "~/components/ui";
 import { citizenReports } from "~/db/schema";
 import { todayISO } from "~/lib/format";
 import { REPORT_TYPE_LABELS, toOptions } from "~/lib/labels";

@@ -1,9 +1,8 @@
 import { eq } from "drizzle-orm";
 import { Trash2 } from "lucide-react";
 import { data, Form } from "react-router";
-import { EventForm } from "~/components/admin/event-form";
-import { ConfirmButton } from "~/components/ui/button";
-import { Card, PageHeader } from "~/components/ui/data";
+import { EventForm } from "~/components/admin/forms";
+import { Card, ConfirmButton, PageHeader } from "~/components/ui";
 import { events } from "~/db/schema";
 import { eventSchema } from "~/lib/schemas/admin";
 import { validateForm } from "~/lib/validation";

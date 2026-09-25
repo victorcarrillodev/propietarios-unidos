@@ -1,8 +1,6 @@
 import { ExternalLink } from "lucide-react";
 import { data, Form } from "react-router";
-import { buttonClasses, SubmitButton } from "~/components/ui/button";
-import { Card, PageHeader } from "~/components/ui/data";
-import { TextareaField, TextField } from "~/components/ui/form";
+import { buttonClasses, Card, PageHeader, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import { siteSettingsSchema, type SiteSettings } from "~/lib/site-settings";
 import { validateForm } from "~/lib/validation";
 import { audit } from "~/server/audit.server";

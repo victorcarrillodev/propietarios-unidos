@@ -1,7 +1,7 @@
 import { ArrowLeft, TreePine } from "lucide-react";
 import { data } from "react-router";
 import { Section } from "~/components/site/sections";
-import { ButtonLink } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui";
 
 export function loader() {
   return data(null, { status: 404 });

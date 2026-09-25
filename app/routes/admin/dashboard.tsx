@@ -1,4 +1,3 @@
-import { and, asc, count, desc, eq, gte, lt, sql } from "drizzle-orm";
 import {
   BadgeDollarSign,
   CalendarDays,
@@ -13,19 +12,14 @@ import {
   Wallet,
 } from "lucide-react";
 import { Link } from "react-router";
-import { MonthlyFinanceChart, StatTile, type MonthlyPoint } from "~/components/admin/charts";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, Card, PageHeader } from "~/components/ui/data";
-import { activityRecords, citizenReports, events, expenses, members, payments } from "~/db/schema";
+import { MonthlyFinanceChart, StatTile } from "~/components/admin/charts";
+import { Badge, ButtonLink, Card, PageHeader } from "~/components/ui";
 import {
-  currentMonth,
-  currentYear,
   formatDate,
   formatDateTime,
   formatLongDate,
   formatMoney,
   formatNumber,
-  shiftMonth,
   todayISO,
 } from "~/lib/format";
 import {
@@ -37,131 +31,27 @@ import {
   REPORT_TYPE_LABELS,
 } from "~/lib/labels";
 import { can } from "~/lib/permissions";
-import { db } from "~/server/db.server";
 import { getUser } from "~/server/guards.server";
+import {
+  getDashboardFinanceSummary,
+  getDashboardInboxSummary,
+  getDashboardMembersSummary,
+  getDashboardRecordsSummary,
+  getDashboardUpcomingEvents,
+} from "~/server/queries/dashboard.server";
 import type { Route } from "./+types/dashboard";
-
-async function financeSummary() {
-  const month = currentMonth();
-  const year = currentYear();
-  const firstMonth = shiftMonth(month, -11);
-  const vigente = eq(payments.status, "vigente");
-
-  const [[totals], [expenseTotals], incomeByMonth, expensesByMonth, latestPayments] = await Promise.all([
-    db
-      .select({
-        month: sql<number>`coalesce(sum(${payments.amountCents}) filter (where ${payments.paidOn} >= ${`${month}-01`} and ${payments.paidOn} < ${`${shiftMonth(month, 1)}-01`}), 0)::float8`.mapWith(Number),
-        year: sql<number>`coalesce(sum(${payments.amountCents}) filter (where ${payments.paidOn} >= ${`${year}-01-01`} and ${payments.paidOn} < ${`${year + 1}-01-01`}), 0)::float8`.mapWith(Number),
-      })
-      .from(payments)
-      .where(vigente),
-    db
-      .select({
-        year: sql<number>`coalesce(sum(${expenses.amountCents}), 0)::float8`.mapWith(Number),
-      })
-      .from(expenses)
-      .where(and(gte(expenses.spentOn, `${year}-01-01`), lt(expenses.spentOn, `${year + 1}-01-01`))),
-    db
-      .select({
-        month: sql<string>`to_char(${payments.paidOn}, 'YYYY-MM')`,
-        total: sql<number>`sum(${payments.amountCents})::float8`.mapWith(Number),
-      })
-      .from(payments)
-      .where(and(vigente, gte(payments.paidOn, `${firstMonth}-01`)))
-      .groupBy(sql`1`),
-    db
-      .select({
-        month: sql<string>`to_char(${expenses.spentOn}, 'YYYY-MM')`,
-        total: sql<number>`sum(${expenses.amountCents})::float8`.mapWith(Number),
-      })
-      .from(expenses)
-      .where(gte(expenses.spentOn, `${firstMonth}-01`))
-      .groupBy(sql`1`),
-    db
-      .select({
-        id: payments.id,
-        folio: payments.folio,
-        amountCents: payments.amountCents,
-        paidOn: payments.paidOn,
-        concept: payments.concept,
-        payerName: payments.payerName,
-        memberName: members.fullName,
-      })
-      .from(payments)
-      .leftJoin(members, eq(members.id, payments.memberId))
-      .where(vigente)
-      .orderBy(desc(payments.paidOn), desc(payments.folio))
-      .limit(5),
-  ]);
-
-  const incomeMap = new Map(incomeByMonth.map((row) => [row.month, row.total]));
-  const expenseMap = new Map(expensesByMonth.map((row) => [row.month, row.total]));
-  const monthly: MonthlyPoint[] = Array.from({ length: 12 }, (_, i) => {
-    const key = shiftMonth(firstMonth, i);
-    return { month: key, income: incomeMap.get(key) ?? 0, expenses: expenseMap.get(key) ?? 0 };
-  });
-
-  return {
-    monthIncome: totals?.month ?? 0,
-    yearIncome: totals?.year ?? 0,
-    yearExpenses: expenseTotals?.year ?? 0,
-    year,
-    monthly,
-    latestPayments,
-  };
-}
 
 export async function loader({ context }: Route.LoaderArgs) {
   const user = getUser(context);
   const role = user.role;
 
-  const [memberCounts, finance, inbox, records, upcoming] = await Promise.all([
-    can(role, "members")
-      ? db.select({ status: members.status, total: count() }).from(members).groupBy(members.status)
-      : null,
-    can(role, "finance") ? financeSummary() : null,
-    can(role, "inbox")
-      ? db
-          .select({
-            id: citizenReports.id,
-            folio: citizenReports.folio,
-            type: citizenReports.type,
-            location: citizenReports.location,
-            status: citizenReports.status,
-            createdAt: citizenReports.createdAt,
-          })
-          .from(citizenReports)
-          .orderBy(desc(citizenReports.createdAt))
-          .limit(5)
-      : null,
-    can(role, "records")
-      ? db
-          .select({
-            id: activityRecords.id,
-            type: activityRecords.type,
-            title: activityRecords.title,
-            occurredOn: activityRecords.occurredOn,
-            isPublic: activityRecords.isPublic,
-          })
-          .from(activityRecords)
-          .orderBy(desc(activityRecords.occurredOn), desc(activityRecords.createdAt))
-          .limit(5)
-      : null,
-    db
-      .select({ id: events.id, title: events.title, startsAt: events.startsAt, location: events.location })
-      .from(events)
-      .where(gte(events.startsAt, new Date()))
-      .orderBy(asc(events.startsAt))
-      .limit(3),
+  const [membersByStatus, finance, inbox, records, upcoming] = await Promise.all([
+    can(role, "members") ? getDashboardMembersSummary() : null,
+    can(role, "finance") ? getDashboardFinanceSummary() : null,
+    can(role, "inbox") ? getDashboardInboxSummary() : null,
+    can(role, "records") ? getDashboardRecordsSummary() : null,
+    getDashboardUpcomingEvents(),
   ]);
-
-  const membersByStatus = memberCounts
-    ? {
-        activo: memberCounts.find((row) => row.status === "activo")?.total ?? 0,
-        pendiente: memberCounts.find((row) => row.status === "pendiente")?.total ?? 0,
-        inactivo: memberCounts.find((row) => row.status === "inactivo")?.total ?? 0,
-      }
-    : null;
 
   return { user, today: todayISO(), membersByStatus, finance, inbox, records, upcoming };
 }

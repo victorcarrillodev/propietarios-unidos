@@ -1,7 +1,7 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { Download, FileText, FolderOpen } from "lucide-react";
 import { PageHero, Section } from "~/components/site/sections";
-import { EmptyState } from "~/components/ui/data";
+import { EmptyState } from "~/components/ui";
 import { documents } from "~/db/schema";
 import { DOCUMENT_CATEGORIES } from "~/lib/enums";
 import { formatDate, formatTimestampDate } from "~/lib/format";

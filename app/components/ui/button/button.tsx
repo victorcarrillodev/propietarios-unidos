@@ -21,9 +21,9 @@ const variants: Record<ButtonVariant, string> = {
   accent:
     "bg-amber-400 text-forest-950 shadow-xs font-semibold hover:bg-amber-300 hover:shadow-sm focus-visible:ring-amber-500 focus-visible:ring-offset-forest-950 active:bg-amber-500",
   light:
-    "text-white ring-1 ring-white/40 ring-inset hover:bg-white/15 hover:ring-white/60 focus-visible:ring-white active:bg-white/20",
+    "text-white font-semibold ring-2 ring-white/80 ring-inset hover:bg-white/20 hover:ring-white focus-visible:ring-white active:bg-white/30",
   outline:
-    "bg-transparent text-forest-800 ring-1 ring-forest-300 ring-inset hover:bg-forest-50 hover:ring-forest-500 focus-visible:ring-forest-600 focus-visible:ring-offset-cream",
+    "bg-transparent text-forest-800 font-semibold ring-2 ring-forest-600 ring-inset hover:bg-forest-50 hover:text-forest-900 hover:ring-forest-700 focus-visible:ring-forest-600 focus-visible:ring-offset-cream active:bg-forest-100",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -92,27 +92,5 @@ export function SubmitButton({
         children
       )}
     </Button>
-  );
-}
-
-/** Botón que pide confirmación antes de enviar (por ejemplo, para eliminar o cancelar). */
-export function ConfirmButton({
-  message,
-  onClick,
-  type = "submit",
-  ...props
-}: ButtonProps & { message: string }) {
-  return (
-    <Button
-      type={type}
-      onClick={(event) => {
-        if (!window.confirm(message)) {
-          event.preventDefault();
-          return;
-        }
-        onClick?.(event);
-      }}
-      {...props}
-    />
   );
 }

@@ -1,8 +1,7 @@
 import { asc, desc, gte, lt, or } from "drizzle-orm";
 import { CalendarDays, MapPin, Plus } from "lucide-react";
 import { Link } from "react-router";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, Card, EmptyState, PageHeader } from "~/components/ui/data";
+import { Badge, ButtonLink, Card, EmptyState, PageHeader } from "~/components/ui";
 import { events } from "~/db/schema";
 import { dateParts, formatTime } from "~/lib/format";
 import { db } from "~/server/db.server";

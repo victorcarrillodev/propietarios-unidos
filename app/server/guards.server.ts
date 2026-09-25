@@ -9,7 +9,7 @@ export const requireUserMiddleware: MiddlewareFunction<Response> = async ({ requ
   const session = await getSessionUser(request);
   if (!session) {
     const redirectTo = `${url.pathname}${url.search}`;
-    throw redirect(`/admin/login?redirectTo=${encodeURIComponent(redirectTo)}`);
+    throw redirect(`/login?redirectTo=${encodeURIComponent(redirectTo)}`);
   }
   context.set(userContext, session.user);
   const response = await next();

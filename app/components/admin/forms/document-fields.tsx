@@ -1,4 +1,4 @@
-import { CheckboxField, SelectField, TextareaField, TextField } from "~/components/ui/form";
+import { CheckboxField, SelectField, TextareaField, TextField } from "~/components/ui";
 import type { DocumentRow } from "~/db/schema";
 import { DOCUMENT_CATEGORY_LABELS, toOptions } from "~/lib/labels";
 import type { FieldErrors } from "~/lib/validation";

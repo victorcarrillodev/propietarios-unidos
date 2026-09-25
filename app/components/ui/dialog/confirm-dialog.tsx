@@ -8,7 +8,7 @@ export type ConfirmDialogProps = {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
-  description: ReactNode;
+  description?: ReactNode;
   confirmText?: string;
   cancelText?: string;
   tone?: "danger" | "primary" | "accent";
@@ -58,7 +58,7 @@ export function ConfirmDialog({
         </span>
         <div className="min-w-0 flex-1">
           <h3 className="font-display text-lg font-semibold text-stone-900">{title}</h3>
-          <div className="mt-2 text-sm leading-relaxed text-stone-600">{description}</div>
+          {description && <div className="mt-2 text-sm leading-relaxed text-stone-600">{description}</div>}
         </div>
       </div>
     </Modal>

@@ -13,8 +13,9 @@ import {
   Trash2,
   TreeDeciduous,
 } from "lucide-react";
+import { TopoPattern } from "~/components/brand";
 import { PageHero, Section, SectionHeading } from "~/components/site/sections";
-import { ButtonLink } from "~/components/ui/button";
+import { ButtonLink } from "~/components/ui";
 import { seo, siteUrlFrom } from "~/lib/seo";
 import type { Route } from "./+types/forest";
 
@@ -114,10 +115,13 @@ export default function Forest() {
         description="Un pulmón verde al poniente de Guadalajara que regula el clima, capta agua y resguarda una enorme diversidad de vida. Cuidarlo es cuidar el futuro de la región."
       />
 
-      <Section>
+      <Section className="relative bg-gradient-to-b from-forest-50/70 via-white to-forest-50/30 border-b border-forest-900/5">
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {FACTS.map((fact) => (
-            <li key={fact.title} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200">
+            <li
+              key={fact.title}
+              className="rounded-2xl bg-white p-6 shadow-xs ring-1 ring-forest-900/10 transition-all hover:-translate-y-0.5 hover:shadow-md hover:ring-forest-400/30"
+            >
               <p className="font-display text-4xl font-semibold text-forest-700">{fact.value}</p>
               <p className="mt-1 font-semibold text-forest-950">{fact.title}</p>
               <p className="mt-3 text-sm leading-relaxed text-stone-600">{fact.text}</p>
@@ -126,25 +130,32 @@ export default function Forest() {
         </ul>
       </Section>
 
-      <Section className="bg-white">
-        <SectionHeading
-          eyebrow="Su importancia"
-          title="¿Por qué es tan importante?"
-          description="El bosque nos brinda beneficios que no siempre se ven, pero de los que dependemos todos los días."
-        />
-        <ul className="mt-12 grid gap-5 md:grid-cols-2">
-          {SERVICES.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="flex gap-5 rounded-2xl bg-cream p-6 ring-1 ring-earth-100">
-              <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-forest-800 text-white">
-                <Icon className="size-6" aria-hidden />
-              </span>
-              <div>
-                <h3 className="font-display text-xl font-semibold text-forest-950">{title}</h3>
-                <p className="mt-2 leading-relaxed text-stone-600">{text}</p>
-              </div>
-            </li>
-          ))}
-        </ul>
+      <Section className="relative overflow-hidden bg-forest-950 text-white">
+        <TopoPattern className="text-white/[0.04]" />
+        <div className="relative">
+          <SectionHeading
+            light
+            eyebrow="Su importancia"
+            title="¿Por qué es tan importante?"
+            description="El bosque nos brinda beneficios que no siempre se ven, pero de los que dependemos todos los días."
+          />
+          <ul className="mt-12 grid gap-5 md:grid-cols-2">
+            {SERVICES.map(({ icon: Icon, title, text }) => (
+              <li
+                key={title}
+                className="flex gap-5 rounded-2xl bg-forest-900/75 p-6 ring-1 ring-forest-700/50 backdrop-blur-xs transition-all hover:bg-forest-900 hover:ring-forest-400/40"
+              >
+                <span className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-forest-800 text-amber-300 ring-1 ring-white/10">
+                  <Icon className="size-6" aria-hidden />
+                </span>
+                <div>
+                  <h3 className="font-display text-xl font-semibold text-white">{title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-forest-100/90">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
       </Section>
 
       <Section>
@@ -155,7 +166,7 @@ export default function Forest() {
         />
         <ul className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {THREATS.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="rounded-2xl bg-white p-6 shadow-sm ring-1 ring-stone-200">
+            <li key={title} className="rounded-2xl bg-white p-6 shadow-xs ring-1 ring-forest-900/10">
               <Icon className="size-7 text-red-700" aria-hidden />
               <h3 className="mt-4 font-semibold text-forest-950">{title}</h3>
               <p className="mt-2 text-sm leading-relaxed text-stone-600">{text}</p>
@@ -164,8 +175,9 @@ export default function Forest() {
         </ul>
       </Section>
 
-      <Section className="bg-forest-900 text-white">
-        <div className="grid items-start gap-12 lg:grid-cols-2">
+      <Section className="relative overflow-hidden bg-gradient-to-b from-forest-900 via-forest-950 to-forest-900 text-white">
+        <TopoPattern className="text-white/[0.04]" />
+        <div className="relative grid items-start gap-12 lg:grid-cols-2">
           <div>
             <SectionHeading
               light
@@ -177,7 +189,7 @@ export default function Forest() {
               Súmate a la asociación <ArrowRight aria-hidden />
             </ButtonLink>
           </div>
-          <div className="rounded-3xl bg-white/5 p-8 ring-1 ring-white/10">
+          <div className="rounded-3xl bg-forest-900/80 p-8 ring-1 ring-forest-700/60 backdrop-blur-xs">
             <h3 className="font-display text-2xl font-semibold">Si visitas el bosque</h3>
             <ul className="mt-5 space-y-3">
               {TIPS.map((tip) => (

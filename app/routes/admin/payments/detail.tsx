@@ -3,9 +3,7 @@ import { alias } from "drizzle-orm/pg-core";
 import { Ban, Printer } from "lucide-react";
 import { data, Form, Link } from "react-router";
 import { LogoMark } from "~/components/brand";
-import { Button, ConfirmButton } from "~/components/ui/button";
-import { Badge, Card, PageHeader } from "~/components/ui/data";
-import { TextField } from "~/components/ui/form";
+import { Badge, Button, Card, ConfirmButton, PageHeader, TextField } from "~/components/ui";
 import { fees, members, payments, users } from "~/db/schema";
 import { formatDate, formatDateTime, formatMoney } from "~/lib/format";
 import {
@@ -222,6 +220,7 @@ export default function PaymentDetail({ loaderData, actionData }: Route.Componen
                   variant="danger"
                   size="sm"
                   message={`¿Cancelar el pago folio ${payment.folio}? Dejará de contar en los totales.`}
+                  confirmLabel="Cancelar pago"
                 >
                   <Ban aria-hidden /> Cancelar pago
                 </ConfirmButton>

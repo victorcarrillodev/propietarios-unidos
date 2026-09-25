@@ -2,18 +2,16 @@ import { and, count, desc, eq, sql, type SQL } from "drizzle-orm";
 import { Globe, NotebookPen, Plus } from "lucide-react";
 import { Link } from "react-router";
 import { FilterBar, FilterSelect, SearchInput } from "~/components/admin/filters";
-import { ButtonLink } from "~/components/ui/button";
-import { Badge, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui/data";
+import { Badge, ButtonLink, EmptyState, PageHeader, Pagination, TableContainer, Td, Th } from "~/components/ui";
 import { activityRecords, users } from "~/db/schema";
 import { RECORD_TYPES } from "~/lib/enums";
 import { formatDate } from "~/lib/format";
 import { RECORD_TYPE_LABELS, RECORD_TYPE_TONES, toOptions } from "~/lib/labels";
-import { likeEscape, pageParam, pickEnum } from "~/lib/validation";
+import { getPaginationMeta, getPaginationParams } from "~/lib/pagination";
+import { likeEscape, pickEnum } from "~/lib/validation";
 import { db } from "~/server/db.server";
 import { requireModule } from "~/server/guards.server";
 import type { Route } from "./+types/list";
-
-const PAGE_SIZE = 25;
 
 export async function loader({ context, url }: Route.LoaderArgs) {
   requireModule(context, "records");
@@ -23,7 +21,7 @@ export async function loader({ context, url }: Route.LoaderArgs) {
     type: pickEnum(params.get("tipo"), RECORD_TYPES),
     visibility: pickEnum(params.get("visibilidad"), ["publica", "interna"]),
   };
-  const page = pageParam(url);
+  const pagination = getPaginationParams(url, 25);
 
   const conditions: SQL[] = [];
   if (filters.type) conditions.push(eq(activityRecords.type, filters.type));
@@ -52,12 +50,13 @@ export async function loader({ context, url }: Route.LoaderArgs) {
       .leftJoin(users, eq(users.id, activityRecords.createdBy))
       .where(where)
       .orderBy(desc(activityRecords.occurredOn), desc(activityRecords.createdAt))
-      .limit(PAGE_SIZE)
-      .offset((page - 1) * PAGE_SIZE),
+      .limit(pagination.limit)
+      .offset(pagination.offset),
     db.select({ total: count() }).from(activityRecords).where(where),
   ]);
 
-  return { rows, total, page, pageCount: Math.max(1, Math.ceil(total / PAGE_SIZE)), filters };
+  const meta = getPaginationMeta(pagination, total);
+  return { rows, total: meta.total, page: meta.page, pageCount: meta.pageCount, filters };
 }
 
 export default function RecordsList({ loaderData }: Route.ComponentProps) {

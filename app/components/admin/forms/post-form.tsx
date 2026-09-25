@@ -1,8 +1,6 @@
 import { ImageUp } from "lucide-react";
 import { Form } from "react-router";
-import { ButtonLink, SubmitButton } from "~/components/ui/button";
-import { Card } from "~/components/ui/card";
-import { Alert, CheckboxField, TextareaField, TextField } from "~/components/ui/form";
+import { Alert, ButtonLink, Card, CheckboxField, SubmitButton, TextareaField, TextField } from "~/components/ui";
 import type { Post } from "~/db/schema";
 import { dateToLocalInput } from "~/lib/format";
 import type { FieldErrors } from "~/lib/validation";

@@ -1,6 +1,5 @@
 import { Form } from "react-router";
-import { SubmitButton } from "~/components/ui/button";
-import { SelectField, TextareaField, TextField, type Option } from "~/components/ui/form";
+import { SelectField, SubmitButton, TextareaField, TextField, type Option } from "~/components/ui";
 import type { Property } from "~/db/schema";
 import { MUNICIPALITIES } from "~/lib/enums";
 import { TENURE_LABELS, toOptions } from "~/lib/labels";
