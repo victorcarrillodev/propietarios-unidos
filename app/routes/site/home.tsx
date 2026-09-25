@@ -6,7 +6,7 @@ import { PROGRAMS } from "~/components/site/programs";
 import { ActivityTimeline, Container, EventCard, PostCard, Section, SectionHeading } from "~/components/site/sections";
 import { ButtonLink } from "~/components/ui";
 import { activityRecords, events, posts } from "~/db/schema";
-import { seo, siteUrlFrom } from "~/lib/seo";
+import { seo, siteSettingsFrom, siteUrlFrom } from "~/lib/seo";
 import { cn } from "~/lib/utils";
 import { db } from "~/server/db.server";
 import type { loader as layoutLoader } from "./layout";
@@ -14,17 +14,27 @@ import type { Route } from "./+types/home";
 
 export const meta: Route.MetaFunction = ({ matches }) => {
   const siteUrl = siteUrlFrom(matches);
+  const settings = siteSettingsFrom(matches);
   return [
     ...seo({ siteUrl, path: "/" }),
     {
       "script:ld+json": {
         "@context": "https://schema.org",
         "@type": "NGO",
-        name: "Propietarios Unidos en Mejoras del Bosque La Primavera",
+        name: settings?.orgName ?? "Propietarios Unidos en Mejoras del Bosque La Primavera",
         url: siteUrl || undefined,
-        logo: siteUrl ? `${siteUrl}/apple-touch-icon.png` : undefined,
+        logo: siteUrl ? `${siteUrl}/icon-512.png` : undefined,
+        description: settings?.tagline || undefined,
         areaServed: "Bosque La Primavera, Jalisco, México",
-        address: { "@type": "PostalAddress", addressLocality: "Tala", addressRegion: "Jalisco", addressCountry: "MX" },
+        address: settings?.address || {
+          "@type": "PostalAddress",
+          addressLocality: "Tala",
+          addressRegion: "Jalisco",
+          addressCountry: "MX",
+        },
+        telephone: settings?.phone || undefined,
+        email: settings?.email || undefined,
+        sameAs: settings?.facebookUrl ? [settings.facebookUrl] : undefined,
       },
     },
   ];

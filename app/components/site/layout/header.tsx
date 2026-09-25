@@ -1,5 +1,5 @@
 import { Menu, TriangleAlert, X } from "lucide-react";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router";
 import { Logo } from "~/components/brand";
 import { buttonClasses } from "~/components/ui";
@@ -9,13 +9,26 @@ import { SITE_NAV } from "./nav";
 export function SiteHeader() {
   const menuRef = useRef<HTMLDetailsElement>(null);
   const location = useLocation();
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     menuRef.current?.removeAttribute("open");
   }, [location.pathname]);
 
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    <header className="sticky top-0 z-40 border-b border-forest-900/10 bg-forest-50/90 backdrop-blur-md supports-[backdrop-filter]:bg-forest-50/85 transition-shadow shadow-xs">
+    <header
+      className={cn(
+        "sticky top-0 z-40 border-b border-forest-900/10 bg-forest-50/90 backdrop-blur-md transition-shadow duration-200 supports-[backdrop-filter]:bg-forest-50/85",
+        scrolled ? "shadow-md" : "shadow-none",
+      )}
+    >
       <a
         href="#contenido"
         className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-xl focus:bg-white focus:px-4 focus:py-2.5 focus:shadow-lg focus:ring-2 focus:ring-forest-600"

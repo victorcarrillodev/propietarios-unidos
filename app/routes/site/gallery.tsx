@@ -9,6 +9,9 @@ export const meta: Route.MetaFunction = ({ matches }) =>
       "Fotos del trabajo de Propietarios Unidos en el Bosque La Primavera: mantenimiento de caminos, prevención de incendios, jornadas comunitarias y recorridos.",
     path: "/galeria",
     image: "/galeria/foto-01.webp",
+    imageWidth: 1280,
+    imageHeight: 730,
+    imageAlt: "Mantenimiento de caminos y accesos en el Bosque La Primavera",
     siteUrl: siteUrlFrom(matches),
   });
 
