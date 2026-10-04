@@ -16,6 +16,7 @@ export async function loader() {
       whatsapp: s.whatsapp,
       email: s.email,
       facebookUrl: s.facebookUrl,
+      instagramUrl: s.instagramUrl,
       mapsUrl: s.mapsUrl,
       hours: s.hours,
     },

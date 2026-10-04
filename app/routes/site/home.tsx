@@ -34,7 +34,9 @@ export const meta: Route.MetaFunction = ({ matches }) => {
         },
         telephone: settings?.phone || undefined,
         email: settings?.email || undefined,
-        sameAs: settings?.facebookUrl ? [settings.facebookUrl] : undefined,
+        sameAs: [settings?.facebookUrl, settings?.instagramUrl].filter(Boolean).length
+          ? [settings?.facebookUrl, settings?.instagramUrl].filter(Boolean)
+          : undefined,
       },
     },
   ];

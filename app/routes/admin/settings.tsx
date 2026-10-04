@@ -94,6 +94,7 @@ export default function Settings({ loaderData, actionData }: Route.ComponentProp
             <TextField label="Correo" name="email" type="email" defaultValue={value("email")} error={errors?.email} />
             <TextField label="Horario de atención" name="hours" defaultValue={value("hours")} error={errors?.hours} />
             <TextField label="Página de Facebook" name="facebookUrl" type="url" defaultValue={value("facebookUrl")} error={errors?.facebookUrl} />
+            <TextField label="Perfil de Instagram" name="instagramUrl" type="url" defaultValue={value("instagramUrl")} error={errors?.instagramUrl} />
             <TextField
               label="Enlace de Google Maps"
               name="mapsUrl"

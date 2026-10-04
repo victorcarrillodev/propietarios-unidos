@@ -1,5 +1,5 @@
 import { CircleCheck, Clock, Mail, MapPin, MessageCircle, Phone } from "lucide-react";
-import { FacebookIcon } from "~/components/brand";
+import { FacebookIcon, InstagramIcon } from "~/components/brand";
 import type { ReactNode } from "react";
 import { data, Form, useRouteLoaderData } from "react-router";
 import { PrivacyConsent } from "~/components/site/privacy-consent";
@@ -151,6 +151,18 @@ export default function Contact({ actionData }: Route.ComponentProps) {
                   className="font-medium text-forest-700 hover:underline"
                 >
                   Visita nuestra página
+                </a>
+              </ContactItem>
+            )}
+            {s?.instagramUrl && (
+              <ContactItem icon={<InstagramIcon className="size-5" />} title="Instagram">
+                <a
+                  href={s.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-medium text-forest-700 hover:underline"
+                >
+                  @propsunidos.bosquelaprimavera
                 </a>
               </ContactItem>
             )}

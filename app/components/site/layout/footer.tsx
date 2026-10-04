@@ -1,13 +1,13 @@
 import { Mail, MapPin, MessageCircle, Phone } from "lucide-react";
 import { Link } from "react-router";
-import { FacebookIcon, Logo } from "~/components/brand";
+import { FacebookIcon, InstagramIcon, Logo } from "~/components/brand";
 import type { SiteSettings } from "~/lib/site-settings";
 import { telLink, whatsappLink } from "~/lib/utils";
 import { SITE_NAV } from "./nav";
 
 export type FooterSettings = Pick<
   SiteSettings,
-  "orgName" | "tagline" | "address" | "phone" | "whatsapp" | "email" | "facebookUrl" | "mapsUrl" | "hours"
+  "orgName" | "tagline" | "address" | "phone" | "whatsapp" | "email" | "facebookUrl" | "instagramUrl" | "mapsUrl" | "hours"
 >;
 
 export function SiteFooter({ settings, year }: { settings: FooterSettings; year: number }) {
@@ -18,16 +18,31 @@ export function SiteFooter({ settings, year }: { settings: FooterSettings; year:
         <div className="lg:col-span-1">
           <Logo light />
           <p className="mt-4 text-sm leading-relaxed text-forest-200">{settings.tagline}</p>
-          {settings.facebookUrl && (
-            <a
-              href={settings.facebookUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white/5 px-3.5 py-2 text-sm font-medium text-white ring-1 ring-white/10 transition-all hover:bg-white/10 hover:ring-white/20 active:scale-95"
-            >
-              <FacebookIcon className="size-4 text-blue-400" />
-              <span>Síguenos en Facebook</span>
-            </a>
+          {(settings.facebookUrl || settings.instagramUrl) && (
+            <div className="mt-6 flex flex-wrap gap-2">
+              {settings.facebookUrl && (
+                <a
+                  href={settings.facebookUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-3.5 py-2 text-sm font-medium text-white ring-1 ring-white/10 transition-all hover:bg-white/10 hover:ring-white/20 active:scale-95"
+                >
+                  <FacebookIcon className="size-4 text-blue-400" />
+                  <span>Facebook</span>
+                </a>
+              )}
+              {settings.instagramUrl && (
+                <a
+                  href={settings.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white/5 px-3.5 py-2 text-sm font-medium text-white ring-1 ring-white/10 transition-all hover:bg-white/10 hover:ring-white/20 active:scale-95"
+                >
+                  <InstagramIcon className="size-4 text-pink-400" />
+                  <span>Instagram</span>
+                </a>
+              )}
+            </div>
           )}
         </div>
 

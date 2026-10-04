@@ -84,6 +84,7 @@ export type SiteLayoutSettings = {
   whatsapp: string;
   email: string;
   facebookUrl: string;
+  instagramUrl: string;
   mapsUrl: string;
   hours: string;
 };
