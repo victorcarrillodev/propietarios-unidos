@@ -35,7 +35,7 @@ export function SiteHeader() {
       >
         Saltar al contenido
       </a>
-      <div className="mx-auto flex h-20 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
         <Link to="/" aria-label="Propietarios Unidos, ir al inicio" className="shrink-0 group">
           <Logo className="transition-transform group-hover:scale-[1.01]" />
         </Link>
@@ -50,7 +50,7 @@ export function SiteHeader() {
                   prefetch="intent"
                   className={({ isActive }) =>
                     cn(
-                      "relative rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150",
+                      "relative whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-150",
                       isActive
                         ? "bg-forest-200/80 text-forest-950 font-semibold shadow-xs"
                         : "text-stone-700 hover:bg-forest-100/70 hover:text-forest-900",
@@ -65,7 +65,7 @@ export function SiteHeader() {
         </nav>
 
         {/* Botones de acción directos */}
-        <div className="hidden items-center gap-2.5 sm:flex">
+        <div className="hidden shrink-0 items-center gap-2.5 sm:flex">
           <Link
             to="/reportar"
             className={buttonClasses({
